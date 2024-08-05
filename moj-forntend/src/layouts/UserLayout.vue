@@ -31,6 +31,7 @@
 
 #userLayout .header {
   margin-top: 16px;
+  margin-bottom: 48px;
 }
 
 #userLayout .content {

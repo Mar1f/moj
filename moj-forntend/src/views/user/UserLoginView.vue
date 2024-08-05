@@ -2,7 +2,7 @@
   <div id="userLoginView">
     <h2 style="margin-bottom: 16px">用户登录</h2>
     <a-form
-      style="max-width: 480px; margin: 0 auto"
+      style="max-width: 360px; margin: 0 auto"
       label-align="left"
       auto-label-width
       :model="form"
@@ -20,6 +20,9 @@
       <a-form-item>
         <a-button type="primary" html-type="submit" style="width: 120px">
           登录
+        </a-button>
+        <a-button type="primary" html-type="submit" style="width: 100px">
+          注册
         </a-button>
       </a-form-item>
     </a-form>
