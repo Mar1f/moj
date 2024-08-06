@@ -69,7 +69,7 @@ const form = reactive<UserRegisterRequest>({
   checkPassword: "",
 });
 const handleSubmit = async () => {
-  if (form.userAccount.length < 4 || form.userPassword.length < 6) {
+  if (form.userAccount.length < 4 || form.userPassword.length < 8) {
     return;
   }
   if (
