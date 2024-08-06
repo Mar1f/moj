@@ -21,7 +21,7 @@
         <a-button type="primary" html-type="submit" style="width: 120px">
           登录
         </a-button>
-        <a-button type="primary" html-type="submit" style="width: 100px">
+        <a-button type="primary" html-type="submit" style="width: 120px">
           注册
         </a-button>
       </a-form-item>
@@ -55,6 +55,11 @@ const handleSubmit = async () => {
   const res = await UserControllerService.userLoginUsingPost(form);
   // 登录成功，跳转到主页
   if (res.code === 0) {
+    message.success(
+      `登录成功！欢迎${
+        res.data.userName ? `【${res.data.userName}】` : ""
+      }来到Moj系统`
+    );
     await store.dispatch("user/getLoginUser");
     router.push({
       path: "/",
