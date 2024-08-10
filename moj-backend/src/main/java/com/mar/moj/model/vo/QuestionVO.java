@@ -37,19 +37,9 @@ public class QuestionVO implements Serializable {
     private String content;
 
     /**
-     * 题目知识点（json 数组）
+     * 标签列表
      */
     private List<String> tags;
-
-    /**
-     * 题目难度（json 数组）
-     */
-    private List<String> ques_tags;
-
-    /**
-     * 题目答案
-     */
-    private String answer;
 
     /**
      * 题目提交数
@@ -57,12 +47,12 @@ public class QuestionVO implements Serializable {
     private Integer submitNum;
 
     /**
-     * 题目通过数量
+     * 题目通过数
      */
     private Integer acceptedNum;
 
     /**
-     * 判题配置（json 数组）
+     * 判题配置（json 对象）
      */
     private JudgeConfig judgeConfig;
 
@@ -109,15 +99,11 @@ public class QuestionVO implements Serializable {
         Question question = new Question();
         BeanUtils.copyProperties(questionVO, question);
         List<String> tagList = questionVO.getTags();
-        if (tagList != null){
-            JSONUtil.toJsonStr(JSONUtil.toJsonStr(tagList));
-        }
-        List<String> ques_tagsList = questionVO.getQues_tags();
-        if (ques_tagsList != null){
-            JSONUtil.toJsonStr(JSONUtil.toJsonStr(ques_tagsList));
+        if (tagList != null) {
+            question.setTags(JSONUtil.toJsonStr(tagList));
         }
         JudgeConfig voJudgeConfig = questionVO.getJudgeConfig();
-        if(voJudgeConfig != null){
+        if (voJudgeConfig != null) {
             question.setJudgeConfig(JSONUtil.toJsonStr(voJudgeConfig));
         }
         return question;
@@ -137,10 +123,6 @@ public class QuestionVO implements Serializable {
         BeanUtils.copyProperties(question, questionVO);
         List<String> tagList = JSONUtil.toList(question.getTags(), String.class);
         questionVO.setTags(tagList);
-        
-        List<String> questagList = JSONUtil.toList(question.getQues_tags(), String.class);
-        questionVO.setQues_tags(questagList);
-
         String judgeConfigStr = question.getJudgeConfig();
         questionVO.setJudgeConfig(JSONUtil.toBean(judgeConfigStr, JudgeConfig.class));
         return questionVO;

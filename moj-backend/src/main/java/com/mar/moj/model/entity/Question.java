@@ -9,14 +9,13 @@ import lombok.Data;
 /**
  * 题目
  * @TableName question
- */
-@TableName(value ="question")
+ */@TableName(value ="question")
 @Data
 public class Question implements Serializable {
     /**
      * id
      */
-    @TableId(type = IdType.AUTO)
+    @TableId(type = IdType.ASSIGN_ID)
     private Long id;
 
     /**
@@ -30,14 +29,9 @@ public class Question implements Serializable {
     private String content;
 
     /**
-     * 题目知识点（json 数组）
+     * 标签列表（json 数组）
      */
     private String tags;
-
-    /**
-     * 题目难度（json 数组）
-     */
-    private String ques_tags;
 
     /**
      * 题目答案
@@ -50,7 +44,7 @@ public class Question implements Serializable {
     private Integer submitNum;
 
     /**
-     * 题目通过数量
+     * 题目通过数
      */
     private Integer acceptedNum;
 
@@ -60,7 +54,7 @@ public class Question implements Serializable {
     private String judgeCase;
 
     /**
-     * 判题配置（json 数组）
+     * 判题配置（json 对象）
      */
     private String judgeConfig;
 
