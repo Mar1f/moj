@@ -34,6 +34,11 @@ public class Question implements Serializable {
     private String tags;
 
     /**
+     * 难度
+     */
+    private String difficulty;
+
+    /**
      * 题目答案
      */
     private String answer;

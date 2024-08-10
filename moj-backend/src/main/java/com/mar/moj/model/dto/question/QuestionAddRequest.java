@@ -22,6 +22,11 @@ public class QuestionAddRequest implements Serializable {
     private String content;
 
     /**
+     * 难度
+     */
+    private String difficulty;
+
+    /**
      * 标签列表
      */
     private List<String> tags;

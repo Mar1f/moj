@@ -1,9 +1,7 @@
 package com.mar.moj.model.entity;
 
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableName;
+import com.baomidou.mybatisplus.annotation.*;
+
 import java.io.Serializable;
 import java.util.Date;
 import lombok.Data;
@@ -18,7 +16,7 @@ public class QuestionSubmit implements Serializable {
     /**
      * id
      */
-    @TableId(type = IdType.AUTO)
+    @TableId(type = IdType.ASSIGN_ID)
     private Long id;
 
     /**
@@ -32,12 +30,12 @@ public class QuestionSubmit implements Serializable {
     private String code;
 
     /**
-     * 判题信息（json 数组）
+     * 判题信息（json 对象）
      */
     private String judgeInfo;
 
     /**
-     * 判题状态0-待判题，1 - 判题中 2-成功 3-失败
+     * 判题状态（0 - 待判题、1 - 判题中、2 - 成功、3 - 失败）
      */
     private Integer status;
 
@@ -64,6 +62,7 @@ public class QuestionSubmit implements Serializable {
     /**
      * 是否删除
      */
+    @TableLogic
     private Integer isDelete;
 
     @TableField(exist = false)

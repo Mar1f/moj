@@ -31,15 +31,14 @@ public class QuestionQueryRequest extends PageRequest implements Serializable {
     private String content;
 
     /**
-     * 题目知识点（json 数组）
+     * 标签列表
      */
     private List<String> tags;
 
     /**
-     * 题目难度（json 数组）
+     * 难度
      */
-    private List<String> ques_tags;
-
+    private String difficulty;
     /**
      * 题目答案
      */

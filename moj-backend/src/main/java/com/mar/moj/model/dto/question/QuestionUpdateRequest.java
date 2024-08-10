@@ -11,6 +11,7 @@ import java.util.List;
 @Data
 public class QuestionUpdateRequest implements Serializable {
 
+
     /**
      * id
      */
@@ -27,14 +28,14 @@ public class QuestionUpdateRequest implements Serializable {
     private String content;
 
     /**
-     * 题目知识点（json 数组）
+     * 标签列表
      */
     private List<String> tags;
 
     /**
-     * 题目难度（json 数组）
+     * 难度
      */
-    private List<String> ques_tags;
+    private String difficulty;
 
     /**
      * 题目答案
@@ -42,12 +43,12 @@ public class QuestionUpdateRequest implements Serializable {
     private String answer;
 
     /**
-     * 判题用例（json 数组）
+     * 判题用例
      */
     private List<JudgeCase> judgeCase;
 
     /**
-     * 判题配置（json 数组）
+     * 判题配置
      */
     private JudgeConfig judgeConfig;
 

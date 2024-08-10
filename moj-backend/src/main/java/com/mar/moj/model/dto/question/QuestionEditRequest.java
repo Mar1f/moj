@@ -8,6 +8,7 @@ import java.util.List;
 /**
  * 编辑请求
  */
+
 @Data
 public class QuestionEditRequest implements Serializable {
 
@@ -27,14 +28,9 @@ public class QuestionEditRequest implements Serializable {
     private String content;
 
     /**
-     * 题目知识点（json 数组）
+     * 标签列表
      */
     private List<String> tags;
-
-    /**
-     * 题目难度（json 数组）
-     */
-    private List<String> ques_tags;
 
     /**
      * 题目答案
@@ -42,12 +38,12 @@ public class QuestionEditRequest implements Serializable {
     private String answer;
 
     /**
-     * 判题用例（json 数组）
+     * 判题用例
      */
     private List<JudgeCase> judgeCase;
 
     /**
-     * 判题配置（json 数组）
+     * 判题配置
      */
     private JudgeConfig judgeConfig;
 
