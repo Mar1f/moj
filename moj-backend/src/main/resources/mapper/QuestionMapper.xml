@@ -9,7 +9,7 @@
             <result property="title" column="title" jdbcType="VARCHAR"/>
             <result property="content" column="content" jdbcType="VARCHAR"/>
             <result property="tags" column="tags" jdbcType="VARCHAR"/>
-            <result property="ques_tags" column="ques_tags" jdbcType="VARCHAR"/>
+            <result property="difficulty" column="difficulty" jdbcType="VARCHAR"/>
             <result property="answer" column="answer" jdbcType="VARCHAR"/>
             <result property="submitNum" column="submitNum" jdbcType="INTEGER"/>
             <result property="acceptedNum" column="acceptedNum" jdbcType="INTEGER"/>
@@ -25,7 +25,7 @@
 
     <sql id="Base_Column_List">
         id,title,content,
-        tags,ques_tags,answer,
+        tags,difficulty,answer,
         submitNum,acceptedNum,judgeCase,
         judgeConfig,thumbNum,favourNum,
         userId,createTime,updateTime,
