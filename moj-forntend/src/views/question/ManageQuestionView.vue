@@ -64,18 +64,18 @@ onMounted(() => {
 // {id: "1", title: "A+ D", content: "新的题目内容", tags: "["二叉树"]", answer: "新的答案", submitNum: 0,…}
 
 const columns = [
-  {
-    title: "id",
-    dataIndex: "id",
-  },
+  // {
+  //   title: "id",
+  //   dataIndex: "id",
+  // },
   {
     title: "标题",
     dataIndex: "title",
   },
-  {
-    title: "内容",
-    dataIndex: "content",
-  },
+  // {
+  //   title: "内容",
+  //   dataIndex: "content",
+  // },
   {
     title: "标签",
     dataIndex: "tags",
@@ -96,22 +96,32 @@ const columns = [
     title: "通过数",
     dataIndex: "acceptedNum",
   },
-  {
-    title: "判题配置",
-    dataIndex: "judgeConfig",
-  },
-  {
-    title: "判题用例",
-    dataIndex: "judgeCase",
-  },
-  {
-    title: "用户id",
-    dataIndex: "userId",
-  },
+  // {
+  //   title: "判题配置",
+  //   dataIndex: "judgeConfig",
+  // },
+  // {
+  //   title: "判题用例",
+  //   dataIndex: "judgeCase",
+  // },
+  // {
+  //   title: "用户id",
+  //   dataIndex: "userId",
+  // },
   {
     title: "创建时间",
     dataIndex: "createTime",
+    render: ({ record }) => {
+      const createTime = record.createTime ? new Date(record.createTime) : null;
+      const formattedDate = createTime
+        ? `${createTime.getFullYear()}-${String(
+            createTime.getMonth() + 1
+          ).padStart(2, "0")}-${String(createTime.getDate()).padStart(2, "0")}`
+        : "";
+      return formattedDate;
+    },
   },
+
   {
     title: "操作",
     slotName: "optional",
