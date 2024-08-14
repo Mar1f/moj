@@ -75,7 +75,7 @@
           <a-space direction="vertical" style="min-width: 640px">
             <a-form-item
               :field="`form.judgeCase[${index}].input`"
-              :label="`输入用例-${index + 1}`"
+              :label="`输入用例-${index}`"
               :key="index"
             >
               <a-input
@@ -85,7 +85,7 @@
             </a-form-item>
             <a-form-item
               :field="`form.judgeCase[${index}].output`"
-              :label="`输出用例-${index + 1}`"
+              :label="`输出用例-${index}`"
               :key="index"
             >
               <a-input
@@ -128,9 +128,9 @@ const updatePage = route.path.includes("update");
 let form = ref({
   title: "",
   tags: [],
+  difficulty: "",
   answer: "",
   content: "",
-  difficulty: "",
   judgeConfig: {
     memoryLimit: 1000,
     stackLimit: 1000,
@@ -243,8 +243,5 @@ const onAnswerChange = (value: string) => {
 
 <style scoped>
 #addQuestionView {
-}
-.arco-dropdown-open .arco-icon-down {
-  transform: rotate(180deg);
 }
 </style>
