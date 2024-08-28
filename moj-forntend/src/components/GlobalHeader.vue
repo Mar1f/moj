@@ -130,7 +130,7 @@ const loginUser: LoginUserVO = computed(
 ) as LoginUserVO;
 const visibleRoutes = computed(() =>
   routes.filter((item) => {
-    if (item.meta?.hiddenInMenu) {
+    if (item.meta?.hideInMenu) {
       return false;
     }
     return checkAccess(

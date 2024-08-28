@@ -147,6 +147,28 @@ public class QuestionController {
      * @param id
      * @return
      */
+    @GetMapping("/get")
+    public BaseResponse<Question> getQuestionById(long id, HttpServletRequest request) {
+        if (id <= 0) {
+            throw new BusinessException(ErrorCode.PARAMS_ERROR);
+        }
+        Question question = questionService.getById(id);
+        if (question == null) {
+            throw new BusinessException(ErrorCode.NOT_FOUND_ERROR);
+        }
+        User loginUser = userService.getLoginUser(request);
+        // 如果不是管理员或者本人
+        if(!question.getUserId().equals(loginUser.getId()) && !userService.isAdmin(loginUser)) {
+            throw new BusinessException(ErrorCode.NO_AUTH_ERROR);
+        }
+        return ResultUtils.success(question);
+    }
+    /**
+     * 根据 id 获取(脱敏）
+     *
+     * @param id
+     * @return
+     */
     @GetMapping("/get/vo")
     public BaseResponse<QuestionVO> getQuestionVOById(long id, HttpServletRequest request) {
         if (id <= 0) {
@@ -262,5 +284,39 @@ public class QuestionController {
         boolean result = questionService.updateById(question);
         return ResultUtils.success(result);
     }
+    /**
+     * 点赞或点踩
+     *
+     * @param favourRequest
+     * @param request
+     * @return
+     */
+    @PostMapping("/updateFavourNum")
+    public BaseResponse<Boolean> updateFavourNum(@RequestBody FavourRequest favourRequest, HttpServletRequest request) {
+        if (favourRequest == null || favourRequest.getQuestionId() <= 0) {
+            throw new BusinessException(ErrorCode.PARAMS_ERROR);
+        }
+
+        // Get the current user
+        User loginUser = userService.getLoginUser(request);
+
+        // Fetch the question by ID
+        Question question = questionService.getById(favourRequest.getQuestionId());
+        ThrowUtils.throwIf(question == null, ErrorCode.NOT_FOUND_ERROR);
+
+        // Adjust the favourNum based on the operation (like or dislike)
+        if (favourRequest.isLike()) {
+            question.setFavourNum(question.getFavourNum() + 1);
+        } else {
+            question.setFavourNum(Math.max(0, question.getFavourNum() - 1)); // Ensure favourNum does not go below 0
+        }
+
+        // Update the question
+        boolean result = questionService.updateById(question);
+        ThrowUtils.throwIf(!result, ErrorCode.OPERATION_ERROR);
+
+        return ResultUtils.success(result);
+    }
+
 
 }

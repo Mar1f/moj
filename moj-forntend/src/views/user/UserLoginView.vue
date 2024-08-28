@@ -15,10 +15,22 @@
         <input type="submit" value="登录" @click.prevent="handleSubmit" />
       </div>
     </div>
-    <a href="#" class="click">联系站长</a>
+    <a href="#" class="click" @click.prevent="showModal = true">联系站长</a>
     <a href="#" class="click register" @click.prevent="handleRegister"
       >去注册</a
     >
+    <a-modal
+      v-model:visible="showModal"
+      title="联系站长"
+      @ok="handleOk"
+      @cancel="handleCancel"
+    >
+      <img
+        :src="contactImage"
+        alt="联系站长图片"
+        style="width: 50vw; height: auto; max-width: 100%"
+      />
+    </a-modal>
   </div>
 </template>
 
@@ -28,12 +40,16 @@ import { UserControllerService, UserLoginRequest } from "../../../generated";
 import message from "@arco-design/web-vue/es/message";
 import { useRouter } from "vue-router";
 import { useStore } from "vuex";
+import { ref } from "vue";
 
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const contactImage = require("@/assets/mar1.jpg");
 const form = reactive({
   userAccount: "",
   userPassword: "",
 } as UserLoginRequest);
 
+const showModal = ref(false);
 const router = useRouter();
 const store = useStore();
 
@@ -53,6 +69,14 @@ const handleSubmit = async () => {
 };
 const handleRegister = async () => {
   router.push({ path: "register", replace: true });
+};
+
+const handleOk = () => {
+  showModal.value = false;
+};
+
+const handleCancel = () => {
+  showModal.value = false;
 };
 </script>
 

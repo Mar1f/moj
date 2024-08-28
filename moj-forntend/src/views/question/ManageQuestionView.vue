@@ -5,12 +5,16 @@
       :columns="columns"
       :data="dataList"
       :pagination="{
-        showTotal: true,
+        // showTotal: true,
         pageSize: searchParams.pageSize,
-        current: searchParams.pageNum,
+        current: searchParams.current,
         total,
       }"
+      @page-change="onPageChange"
     >
+      <template #createTime="{ record }">
+        {{ moment(record.createTime).format("YYYY-MM-DD") }}</template
+      >
       <template #optional="{ record }">
         <a-space>
           <a-button type="primary" @click="doUpdate(record)"> 修改</a-button>
@@ -22,7 +26,7 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, ref } from "vue";
+import { onMounted, ref, watch, watchEffect } from "vue";
 import {
   Page_Question_,
   Question,
@@ -31,6 +35,7 @@ import {
 import message from "@arco-design/web-vue/es/message";
 import * as querystring from "querystring";
 import { useRouter } from "vue-router";
+import moment from "moment/moment";
 
 const show = ref(true);
 const tableRef = ref();
@@ -38,8 +43,8 @@ const tableRef = ref();
 const dataList = ref([]);
 const total = ref(0);
 const searchParams = ref({
-  pageSize: 10,
-  pageNum: 1,
+  pageSize: 20,
+  current: 1,
 });
 
 const loadData = async () => {
@@ -53,7 +58,12 @@ const loadData = async () => {
     message.error("加载失败，" + res.message);
   }
 };
-
+/**
+ * 监听searchParams变化
+ */
+watchEffect(() => {
+  loadData();
+});
 /**
  * 页面加载时，请求数据
  */
@@ -110,16 +120,7 @@ const columns = [
   // },
   {
     title: "创建时间",
-    dataIndex: "createTime",
-    render: ({ record }) => {
-      const createTime = record.createTime ? new Date(record.createTime) : null;
-      const formattedDate = createTime
-        ? `${createTime.getFullYear()}-${String(
-            createTime.getMonth() + 1
-          ).padStart(2, "0")}-${String(createTime.getDate()).padStart(2, "0")}`
-        : "";
-      return formattedDate;
-    },
+    slotName: "createTime",
   },
 
   {
@@ -128,6 +129,12 @@ const columns = [
   },
 ];
 
+const onPageChange = (page: number) => {
+  searchParams.value = {
+    ...searchParams.value,
+    current: page,
+  };
+};
 const doDelete = async (question: Question) => {
   const res = await QuestionControllerService.deleteQuestionUsingPost({
     id: question.id,
