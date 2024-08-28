@@ -8,11 +8,50 @@
         <router-view />
       </a-layout-content>
       <a-layout-footer class="footer">
-        <a href="https://yupi.icu" target="_blank"> MAR1 </a>
+        <a @click="showModal">点击联系作者：MAR1</a>
+        <a-modal
+          v-model:visible="isModalVisible"
+          title="MAR1"
+          @ok="handleOk"
+          @cancel="handleCancel"
+        >
+          <img src="../assets/mar1.jpg" alt="Image" style="width: 100%" />
+        </a-modal>
       </a-layout-footer>
     </a-layout>
   </div>
 </template>
+
+<script>
+import GlobalHeader from "@/components/GlobalHeader";
+import { ref } from "vue";
+
+export default {
+  components: { GlobalHeader },
+  setup() {
+    const isModalVisible = ref(false);
+
+    const showModal = () => {
+      isModalVisible.value = true;
+    };
+
+    const handleOk = () => {
+      isModalVisible.value = false;
+    };
+
+    const handleCancel = () => {
+      isModalVisible.value = false;
+    };
+
+    return {
+      isModalVisible,
+      showModal,
+      handleOk,
+      handleCancel,
+    };
+  },
+};
+</script>
 
 <style scoped>
 #basicLayout {
@@ -39,10 +78,3 @@
   text-align: center;
 }
 </style>
-<script>
-import GlobalHeader from "@/components/GlobalHeader";
-
-export default {
-  components: { GlobalHeader },
-};
-</script>
