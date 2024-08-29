@@ -4,8 +4,16 @@
       <a-form-item field="title" label="名称" style="min-width: 240px">
         <a-input v-model="searchParams.title" placeholder="请输入名称" />
       </a-form-item>
-      <a-form-item field="tags" label="标签" style="min-width: 240px">
-        <a-input-tag v-model="searchParams.tags" placeholder="请输入标签" />
+      <a-form-item field="tags" class="flex-2" style="min-width: 200px">
+        <template #label>
+          <div><icon-tags style="margin-right: 5px" />标签</div>
+        </template>
+        <a-input
+          @keyup.enter="handleAdd"
+          @blur="handleAdd"
+          v-model.trim="inputVal"
+          placeholder="请输入标签"
+        />
       </a-form-item>
       <a-form-item>
         <a-button type="primary" @click="doSubmit">搜索</a-button>
@@ -75,7 +83,8 @@ import { useRouter } from "vue-router";
 import moment from "moment";
 const show = ref(true);
 const tableRef = ref();
-
+const tags = ref<string[]>([]);
+const inputVal = ref("");
 const dataList = ref([]);
 const total = ref(0);
 const searchParams = ref<QuestionQueryRequest>({
@@ -84,7 +93,12 @@ const searchParams = ref<QuestionQueryRequest>({
   pageSize: 2,
   current: 1,
 });
-
+const handleAdd = () => {
+  if (inputVal.value) {
+    tags.value.push(inputVal.value);
+    inputVal.value = "";
+  }
+};
 const loadData = async () => {
   const res = await QuestionControllerService.listQuestionVoByPageUsingPost(
     searchParams.value
