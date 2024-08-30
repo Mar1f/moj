@@ -15,7 +15,7 @@ export const routes: Array<RouteRecordRaw> = [
   {
     path: "/user",
     name: "用户",
-    component: UserLayout,
+    // component: UserLayout,
     children: [
       {
         path: "/user/login",

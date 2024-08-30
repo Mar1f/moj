@@ -61,12 +61,19 @@ const handleSubmit = async () => {
         res.data.userName ? `【${res.data.userName}】` : ""
       }来到Moj系统`
     );
+
     await store.dispatch("user/getLoginUser");
-    router.push({ path: "/", replace: true });
+
+    // 使用 router.push 进行跳转
+    router.push({ path: "/", replace: true }).then(() => {
+      // 跳转后刷新页面
+      window.location.reload();
+    });
   } else {
     message.error("登陆失败，" + res.message);
   }
 };
+
 const handleRegister = async () => {
   router.push({ path: "register", replace: true });
 };

@@ -141,8 +141,13 @@ const visibleRoutes = computed(() =>
 );
 
 const logout = () => {
-  UserControllerService.userLogoutUsingPost();
-  location.reload();
+  UserControllerService.userLogoutUsingPost().then(() => {
+    // 先跳转到登录页面
+    router.replace({ path: "user/login" }).then(() => {
+      // 然后刷新页面
+      location.reload();
+    });
+  });
 };
 
 router.afterEach((to, from, failure) => {
