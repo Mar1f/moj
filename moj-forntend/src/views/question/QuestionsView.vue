@@ -50,20 +50,24 @@
         </a-space>
       </template>
       <template #acceptedRate="{ record }">
-        {{
-          `${
-            record.submitNum ? record.acceptedNum / record.submitNum : "0"
-          }% (${record.acceptedNum}/${record.submitNum})`
-        }}</template
-      >
+        <a-progress
+          :percent="
+            record.submitNum ? (record.acceptedNum / record.submitNum) * 100 : 0
+          "
+          :style="{ width: '50%' }"
+          :color="{
+            '0%': 'rgb(var(--danger-6))', // 红色
+            '50%': 'rgb(var(--warning-6))', // 橙色
+            '100%': 'rgb(var(--success-6))', // 绿色
+          }"
+        />
+      </template>
       <template #createTime="{ record }">
         {{ moment(record.createTime).format("YYYY-MM-DD") }}</template
       >
       <template #optional="{ record }">
-        <a-space>
-          <a-button type="primary" @click="toQuestion(record)">
-            开始做题</a-button
-          >
+        <a-space
+          ><icon-pen-fill @click="toQuestion(record)" style="cursor: pointer" />
         </a-space>
       </template>
     </a-table>
@@ -149,6 +153,9 @@ const columns = [
   {
     title: "通过率",
     slotName: "acceptedRate",
+    sortable: {
+      sortDirections: ["ascend"],
+    },
   },
   {
     title: "创建时间",
@@ -156,7 +163,7 @@ const columns = [
   },
 
   {
-    title: "操作",
+    title: "做题",
     slotName: "optional",
   },
 ];
