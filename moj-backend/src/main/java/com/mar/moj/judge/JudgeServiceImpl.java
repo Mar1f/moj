@@ -11,6 +11,7 @@ import com.mar.moj.judge.codesandbox.CodeSandboxProxy;
 import com.mar.moj.judge.codesandbox.model.ExecuteCodeRequest;
 import com.mar.moj.judge.codesandbox.model.ExecuteCodeResponse;
 import com.mar.moj.judge.strategy.DefaultJudgeStrategy;
+import com.mar.moj.judge.strategy.JavaLanguageJudgeStrategy;
 import com.mar.moj.judge.strategy.JudgeContext;
 import com.mar.moj.judge.strategy.JudgeStrategy;
 import com.mar.moj.model.dto.question.JudgeCase;
@@ -47,6 +48,7 @@ public class JudgeServiceImpl implements JudgeService {
     @Resource
     private QuestionSubmitService questionSubmitService;
 
+    @Resource JudgeManager judgeManager;
     @Value("${codesandbox.type:example}")
     private String type;
 
@@ -98,9 +100,9 @@ public class JudgeServiceImpl implements JudgeService {
         judgeContext.setOutputList(outputList);
         judgeContext.setJudgeCaseList(judgeCaseList);
         judgeContext.setQuestion(question);
-        
-        JudgeStrategy judgeStrategy = new DefaultJudgeStrategy();
-        JudgeInfo judgeInfo = judgeStrategy.doJudge(judgeContext);
+        judgeContext.setQuestionSubmit(questionSubmit);
+
+        JudgeInfo judgeInfo = judgeManager.doJudge(judgeContext);
         // 修改数据库中的判题结果
         questionSubmitUpdate = new QuestionSubmit();
         questionSubmitUpdate.setId(questionSubmitId);

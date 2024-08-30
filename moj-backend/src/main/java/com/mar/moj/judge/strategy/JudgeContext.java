@@ -3,6 +3,7 @@ package com.mar.moj.judge.strategy;
 import com.mar.moj.model.dto.question.JudgeCase;
 import com.mar.moj.model.dto.questionsubmit.JudgeInfo;
 import com.mar.moj.model.entity.Question;
+import com.mar.moj.model.entity.QuestionSubmit;
 import lombok.Data;
 
 import java.util.List;
@@ -23,4 +24,6 @@ public class JudgeContext {
     private List<JudgeCase> judgeCaseList;
 
     private Question question;
+
+    private QuestionSubmit questionSubmit;
 }
