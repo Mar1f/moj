@@ -11,7 +11,7 @@ import com.mar.moj.judge.codesandbox.model.ExecuteCodeResponse;
  **/
 public class ThirdPartyCodeSandbox implements CodeSandbox {
     @Override
-    public ExecuteCodeResponse execute(ExecuteCodeRequest executeCodeRequest) {
+    public ExecuteCodeResponse executeCode(ExecuteCodeRequest executeCodeRequest) {
         return null;
     }
 }
