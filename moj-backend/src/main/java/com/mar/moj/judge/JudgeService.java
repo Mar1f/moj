@@ -1,6 +1,6 @@
 package com.mar.moj.judge;
 
-import com.mar.moj.model.vo.QuestionSubmitVO;
+import com.mar.moj.model.entity.QuestionSubmit;
 
 /**
  * 判题服务
@@ -11,6 +11,6 @@ public interface JudgeService {
      * @param questionSubmitId
      * @return
      */
-    QuestionSubmitVO doJudge(long questionSubmitId);
+    QuestionSubmit doJudge(long questionSubmitId);
 
 }
