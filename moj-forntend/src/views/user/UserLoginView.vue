@@ -256,4 +256,14 @@ body {
 .click:hover {
   border-radius: 50%;
 }
+/*去除ie edge的密码框默认的快速清除钮（X图标）以及密码文字显示钮*/
+input[type="password"]::-ms-reveal {
+  display: none;
+}
+input[type="password"]::-ms-clear {
+  display: none;
+}
+input[type="password"]::-o-clear {
+  display: none;
+}
 </style>

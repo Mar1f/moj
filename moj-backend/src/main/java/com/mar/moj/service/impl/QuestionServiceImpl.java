@@ -158,6 +158,26 @@ public class QuestionServiceImpl extends ServiceImpl<QuestionMapper, Question>
         return questionVOPage;
     }
 
+    @Override
+    public Question getRandomQuestion() {
+        // 查询题目的总数
+        long count = this.count();
+        if (count == 0) {
+            return null;  // 或者抛出异常
+        }
+        // 生成一个随机的偏移量
+        long randomOffset = (long) (Math.random() * count);
+
+        // 使用分页查询获取随机偏移量位置的一条记录
+        Page<Question> page = new Page<>(randomOffset, 1);
+        Page<Question> resultPage = this.page(page);
+
+        if (resultPage.getRecords().isEmpty()) {
+            return null;
+        }
+        return resultPage.getRecords().get(0);
+    }
+
 
 }
 

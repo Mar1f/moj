@@ -3,7 +3,6 @@
 /* tslint:disable */
 /* eslint-disable */
 export type FavourRequest = {
-    like?: boolean;
-    questionId?: number;
+  like?: boolean;
+  questionId?: number;
 };
-

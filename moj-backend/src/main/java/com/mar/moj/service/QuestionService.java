@@ -53,4 +53,7 @@ public interface QuestionService extends IService<Question> {
      */
     Page<QuestionVO> getQuestionVOPage(Page<Question> questionPage, HttpServletRequest request);
 
+
+    Question getRandomQuestion();
+
 }
