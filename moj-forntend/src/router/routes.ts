@@ -43,7 +43,7 @@ export const routes: Array<RouteRecordRaw> = [
   },
   {
     path: "/",
-    name: "主页",
+    name: "状态",
     component: QuestionsView,
   },
   {
@@ -66,7 +66,7 @@ export const routes: Array<RouteRecordRaw> = [
     name: "创建题目",
     component: AddQuestionView,
     meta: {
-      access: ACCESS_ENUM.USER,
+      access: ACCESS_ENUM.ADMIN,
     },
   },
   {
