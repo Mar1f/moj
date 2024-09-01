@@ -7,7 +7,7 @@ import gfm from "@bytemd/plugin-gfm";
 import highlight from "@bytemd/plugin-highlight";
 import { Viewer } from "@bytemd/vue-next";
 import { withDefaults, defineProps } from "vue";
-
+import math from "@bytemd/plugin-math";
 /**
  * 定义组件属性类型
  */
@@ -18,6 +18,7 @@ interface Props {
 const plugins = [
   gfm(),
   highlight(),
+  math(),
   // Add more plugins here
 ];
 
