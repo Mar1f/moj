@@ -10,6 +10,7 @@ import AddQuestionView from "@/views/question/AddQuestionView.vue";
 import ManageQuestionView from "@/views/question/ManageQuestionView.vue";
 import QuestionsView from "@/views/question/QuestionsView.vue";
 import ViewQuestionView from "@/views/question/ViewQuestionView.vue";
+import writeView from "@/views/writeView.vue";
 
 export const routes: Array<RouteRecordRaw> = [
   {
@@ -26,6 +27,14 @@ export const routes: Array<RouteRecordRaw> = [
         path: "/user/register",
         name: "用户注册",
         component: UserRegisterView,
+      },
+      {
+        path: "/write",
+        name: "隐藏页面",
+        component: writeView,
+        meta: {
+          hideInMenu: true,
+        },
       },
     ],
     meta: {

@@ -3,7 +3,7 @@ package com.mar.moj.judge.strategy;
 import cn.hutool.json.JSONUtil;
 import com.mar.moj.model.dto.question.JudgeCase;
 import com.mar.moj.model.dto.question.JudgeConfig;
-import com.mar.moj.model.dto.questionsubmit.JudgeInfo;
+import com.mar.moj.judge.codesandbox.model.JudgeInfo;
 import com.mar.moj.model.entity.Question;
 import com.mar.moj.model.enums.JudgeInfoMessageEnum;
 

@@ -1,4 +1,4 @@
-package com.mar.moj.model.dto.questionsubmit;
+package com.mar.mojcodesandbox.model;
 
 import lombok.Data;
 

@@ -1,6 +1,6 @@
 package com.mar.moj.judge.strategy;
 
-import com.mar.moj.model.dto.questionsubmit.JudgeInfo;
+import com.mar.moj.judge.codesandbox.model.JudgeInfo;
 /**
  * @description；
  * @author:mar1
