@@ -14,6 +14,7 @@
           v-model="form.tags"
           allow-search
         >
+          <a-option>基础</a-option>
           <a-option>数组</a-option>
           <a-option>字符串</a-option>
           <a-option>排序</a-option>

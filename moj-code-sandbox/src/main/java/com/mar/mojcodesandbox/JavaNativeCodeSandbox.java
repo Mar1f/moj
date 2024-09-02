@@ -4,6 +4,8 @@ import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.io.resource.ResourceUtil;
 import com.mar.mojcodesandbox.model.ExecuteCodeRequest;
 import com.mar.mojcodesandbox.model.ExecuteCodeResponse;
+import com.mar.mojcodesandbox.model.ExecuteMessage;
+import com.mar.mojcodesandbox.utils.ProcessUtils;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
@@ -53,36 +55,22 @@ public class JavaNativeCodeSandbox implements CodeSandbox {
         String compileCmd = String.format("javac -encoding utf-8 %s", userCodeFile.getAbsolutePath());
         try {
             Process compileProcess = Runtime.getRuntime().exec(compileCmd);
-            int exitValue = compileProcess.waitFor();
-            if(exitValue == 0){
-                //正常退出
-                System.out.println("编译成功");
-                BufferedReader bufferedReader=new BufferedReader(new InputStreamReader(compileProcess.getInputStream()));
-                // 拿到控制台的输入流
-                String compileOutputLine;
-                while((compileOutputLine = bufferedReader.readLine()) != null){
-                    System.out.println(compileOutputLine);
-                }
-            }
-            else {
-                // 异常退出
-                System.out.println("编译失败，错误码" + exitValue);
-                BufferedReader bufferedReader=new BufferedReader(new InputStreamReader(compileProcess.getInputStream()));
-                // 拿到控制台的输入流（正常输出）
-                String compileOutputLine;
-                while((compileOutputLine = bufferedReader.readLine()) != null) {
-                    System.out.println(compileOutputLine);
-                }
-                // 分批获取进程的输出
-                BufferedReader errorBufferedReader=new BufferedReader(new InputStreamReader(compileProcess.getErrorStream()));
-                // 拿到控制台的输入流
-                String errorCompileOutputLine;
-                while((errorCompileOutputLine = errorBufferedReader.readLine()) != null) {
-                    System.out.println(errorCompileOutputLine);
-                }
-            }
-        } catch (IOException | InterruptedException e) {
+            ExecuteMessage executeMessage = ProcessUtils.runProcessAndGetMessage(compileProcess, "编译");
+            System.out.println(executeMessage);
+        } catch (Exception e) {
             throw new RuntimeException(e);
+        }
+        // 执行代码
+        for (String inputArgs : inputList){
+            String runCmd = String.format("java -Dfile.encoding=UTF-8 -cp %s Main %s", userCodeParentPath, inputArgs);
+            try {
+                Process runProcess = Runtime.getRuntime().exec(runCmd);
+                ExecuteMessage executeMessage = ProcessUtils.runProcessAndGetMessage(runProcess, "执行");
+                System.out.println(executeMessage);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+
         }
         return null;
     }
