@@ -1,6 +1,8 @@
 package com.mar.mojcodesandbox.utils;
 
+import cn.hutool.core.util.StrUtil;
 import com.mar.mojcodesandbox.model.ExecuteMessage;
+import org.springframework.util.StopWatch;
 
 import java.io.*;
 
@@ -20,6 +22,8 @@ public class ProcessUtils {
         ExecuteMessage executeMessage = new ExecuteMessage();
 
         try {
+            StopWatch stopWatch = new StopWatch();
+            stopWatch.start();
             int exitValue = runProcess.waitFor();
             executeMessage.setExitValue(exitValue);
             if(exitValue == 0){
@@ -57,6 +61,9 @@ public class ProcessUtils {
                 }
                 executeMessage.setErrorMessage(compileOutputStringBuilder.toString());
             }
+
+            stopWatch.stop();
+            executeMessage.setTime(stopWatch.getLastTaskTimeMillis());
         }catch (Exception e){
             e.printStackTrace();
         }
@@ -66,15 +73,17 @@ public class ProcessUtils {
     /**
      * 交互式进程
      * @param runProcess
-     * @param opName
+     * @param args
      * @return
      */
-    public static ExecuteMessage runInterProcessAndGetMessage(Process runProcess, String opName,String args){
+    public static ExecuteMessage runInterProcessAndGetMessage(Process runProcess,String args){
         ExecuteMessage executeMessage = new ExecuteMessage();
         try {
             OutputStream outputStream = runProcess.getOutputStream();
             OutputStreamWriter outputStreamWriter = new OutputStreamWriter(outputStream);
-            outputStreamWriter.write(args);
+            String[] s = args.split(" ");
+            String join = StrUtil.join("\n",s)+ "\n";
+            outputStreamWriter.write(join);
             outputStreamWriter.flush();
             InputStream inputStream = runProcess.getInputStream();
             BufferedReader bufferedReader=new BufferedReader(new InputStreamReader(inputStream));
