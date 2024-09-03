@@ -63,7 +63,7 @@ public class JavaNativeCodeSandbox implements CodeSandbox {
             ExecuteMessage executeMessage = ProcessUtils.runProcessAndGetMessage(compileProcess, "编译");
             System.out.println(executeMessage);
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            return getErrorResponse(e);
         }
         // 执行代码
 
@@ -77,7 +77,7 @@ public class JavaNativeCodeSandbox implements CodeSandbox {
                 System.out.println(executeMessage);
                 executeMessageList.add(executeMessage);
             } catch (IOException e) {
-                throw new RuntimeException(e);
+                return getErrorResponse(e);
             }
 
         }
@@ -118,6 +118,30 @@ public class JavaNativeCodeSandbox implements CodeSandbox {
         
         executeCodeResponse.setJudgeInfo(judgeInfo);
 
+        // 文件清理
+        if(userCodeFile.getParentFile() != null)
+        {
+            boolean del = FileUtil.del(userCodeParentPath);
+            System.out.println("删除" + (del? "成功" : "失败"));
+        }
+        // 错误处理
+
         return executeCodeResponse;
+    }
+
+    /**
+     * 获取错误
+     * @param e
+     * @return
+     */
+    private ExecuteCodeResponse getErrorResponse(Throwable e) {
+        ExecuteCodeResponse executeCodeResponse = new ExecuteCodeResponse();
+        executeCodeResponse.setOutputList(new ArrayList<>());
+        executeCodeResponse.setMessage(e.getMessage());
+        // 沙箱代码错误
+        executeCodeResponse.setStatus(2);
+        executeCodeResponse.setJudgeInfo(new JudgeInfo());
+        return executeCodeResponse;
+
     }
 }
