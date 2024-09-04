@@ -3,6 +3,8 @@ package com.mar.mojcodesandbox;
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.io.resource.ResourceUtil;
 import cn.hutool.core.util.StrUtil;
+import cn.hutool.dfa.FoundWord;
+import cn.hutool.dfa.WordTree;
 import com.mar.mojcodesandbox.model.ExecuteCodeRequest;
 import com.mar.mojcodesandbox.model.ExecuteCodeResponse;
 import com.mar.mojcodesandbox.model.ExecuteMessage;
@@ -32,12 +34,23 @@ public class JavaNativeCodeSandbox implements CodeSandbox {
      * 守护线程，防止时间无限
      */
     private static final long TIME_OUT = 5000L;
+    /**
+     * 黑名单命令
+     */
+    private static final List<String> blackList = Arrays.asList("Files","exec");
+
+    private static final WordTree WORD_TREE;
+    static {
+        //初始化字典树
+        WORD_TREE = new WordTree();
+        WORD_TREE.addWords(blackList);
+    }
     public static void main(String[] args) {
         JavaNativeCodeSandbox javaNativeCodeSandbox = new JavaNativeCodeSandbox();
         ExecuteCodeRequest executeCodeRequest = new ExecuteCodeRequest();
         executeCodeRequest.setInputList(Arrays.asList("1 2","1 3"));
 //        String code = ResourceUtil.readStr("testCode/simpleComputeArgs/Main.java", StandardCharsets.UTF_8);
-        String code = ResourceUtil.readStr("testCode/unsafeCode/MemoryError.java", StandardCharsets.UTF_8);
+        String code = ResourceUtil.readStr("testCode/unsafeCode/ReadFileError.java", StandardCharsets.UTF_8);
         executeCodeRequest.setCode(code);
         executeCodeRequest.setLanguage("java");
         ExecuteCodeResponse executeCodeResponse = javaNativeCodeSandbox.executeCode(executeCodeRequest);
@@ -49,6 +62,12 @@ public class JavaNativeCodeSandbox implements CodeSandbox {
         List<String> inputList = executeCodeRequest.getInputList();
         String code = executeCodeRequest.getCode();
         String language = executeCodeRequest.getLanguage();
+        // 校验代码是否包含黑名单中的命令
+        FoundWord foundWord = WORD_TREE.matchWord(code);
+        if(foundWord != null){
+            System.out.println(foundWord.getFoundWord());
+            return null;
+        }
         // 将用户代码存为文件
         String userDir = System.getProperty("user.dir");
         String globalCodePathName = userDir + File .separator + GLOBAL_CODE_DIR_NAME;
@@ -56,6 +75,7 @@ public class JavaNativeCodeSandbox implements CodeSandbox {
         if(!FileUtil.exist(globalCodePathName)){
             FileUtil.mkdir(globalCodePathName);
         }
+
         // 把用户的代码隔离存放
         String userCodeParentPath = globalCodePathName + File.separator + UUID.randomUUID();
         String userCodePath = userCodeParentPath + File.separator + GLOBAL_JAVA_CLASS_NAME;
