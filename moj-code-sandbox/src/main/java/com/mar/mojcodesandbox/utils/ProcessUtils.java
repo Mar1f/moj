@@ -34,19 +34,19 @@ public class ProcessUtils {
                 // 拿到控制台的输入流
                 String compileOutputLine;
                 while((compileOutputLine = bufferedReader.readLine()) != null){
-                    compileOutputStringBuilder.append(compileOutputLine);
+                    compileOutputStringBuilder.append(compileOutputLine).append("\n");
                 }
                 executeMessage.setMessage(compileOutputStringBuilder.toString());
             }
             else {
                 // 异常退出
-                System.out.println( opName + "失败，错误码" + exitValue);
-                BufferedReader bufferedReader=new BufferedReader(new InputStreamReader(runProcess.getInputStream()));
+                System.out.println( opName + "失败，错误码:" + exitValue);
+                BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(runProcess.getInputStream()));
                 StringBuilder compileOutputStringBuilder = new StringBuilder();
                 // 拿到控制台的输入流（正常输出）
                 String compileOutputLine;
                 while((compileOutputLine = bufferedReader.readLine()) != null) {
-                    compileOutputStringBuilder.append(compileOutputLine);
+                    compileOutputStringBuilder.append(compileOutputLine).append("\n");
                 }
                 executeMessage.setMessage(compileOutputStringBuilder.toString());
 
@@ -57,9 +57,9 @@ public class ProcessUtils {
                 // 拿到控制台的输入流
                 String errorCompileOutputLine;
                 while((errorCompileOutputLine = errorBufferedReader.readLine()) != null) {
-                    errorCompileOutputStringBuilder.append(errorCompileOutputLine);
+                    errorCompileOutputStringBuilder.append(errorCompileOutputLine).append("\n");
                 }
-                executeMessage.setErrorMessage(compileOutputStringBuilder.toString());
+                executeMessage.setErrorMessage(errorCompileOutputStringBuilder.toString());
             }
 
             stopWatch.stop();

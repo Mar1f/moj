@@ -8,7 +8,6 @@ import com.mar.mojcodesandbox.model.ExecuteCodeResponse;
 import com.mar.mojcodesandbox.model.ExecuteMessage;
 import com.mar.mojcodesandbox.model.JudgeInfo;
 import com.mar.mojcodesandbox.utils.ProcessUtils;
-import org.springframework.util.StopWatch;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
@@ -16,7 +15,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 /**
  * @description；
@@ -27,13 +25,19 @@ public class JavaNativeCodeSandbox implements CodeSandbox {
 
     private static final String GLOBAL_CODE_DIR_NAME = "tmpCode";
 
+
     private static final String GLOBAL_JAVA_CLASS_NAME = "Main.java";
 
+    /**
+     * 守护线程，防止时间无限
+     */
+    private static final long TIME_OUT = 5000L;
     public static void main(String[] args) {
         JavaNativeCodeSandbox javaNativeCodeSandbox = new JavaNativeCodeSandbox();
         ExecuteCodeRequest executeCodeRequest = new ExecuteCodeRequest();
         executeCodeRequest.setInputList(Arrays.asList("1 2","1 3"));
-        String code = ResourceUtil.readStr("testCode/simpleComputeArgs/Main.java", StandardCharsets.UTF_8);
+//        String code = ResourceUtil.readStr("testCode/simpleComputeArgs/Main.java", StandardCharsets.UTF_8);
+        String code = ResourceUtil.readStr("testCode/unsafeCode/SleepError.java", StandardCharsets.UTF_8);
         executeCodeRequest.setCode(code);
         executeCodeRequest.setLanguage("java");
         ExecuteCodeResponse executeCodeResponse = javaNativeCodeSandbox.executeCode(executeCodeRequest);
@@ -45,10 +49,11 @@ public class JavaNativeCodeSandbox implements CodeSandbox {
         List<String> inputList = executeCodeRequest.getInputList();
         String code = executeCodeRequest.getCode();
         String language = executeCodeRequest.getLanguage();
+        // 将用户代码存为文件
         String userDir = System.getProperty("user.dir");
         String globalCodePathName = userDir + File .separator + GLOBAL_CODE_DIR_NAME;
         //判断全局代码目录是否存在
-        if(FileUtil.exist(globalCodePathName)){
+        if(!FileUtil.exist(globalCodePathName)){
             FileUtil.mkdir(globalCodePathName);
         }
         // 把用户的代码隔离存放
@@ -67,12 +72,21 @@ public class JavaNativeCodeSandbox implements CodeSandbox {
         }
         // 执行代码
 
-        List<ExecuteMessage> executeMessageList = Arrays.asList();
+        List<ExecuteMessage> executeMessageList = new ArrayList<>();
         for (String inputArgs : inputList){
 
             String runCmd = String.format("java -Dfile.encoding=UTF-8 -cp %s Main %s", userCodeParentPath, inputArgs);
             try {
                 Process runProcess = Runtime.getRuntime().exec(runCmd);
+                // 创建一个新的进程，防止有程序堵塞，当时间超过5秒的时候自动杀死程序
+                new Thread(()->{
+                    try {
+                        Thread.sleep(TIME_OUT);
+                        runProcess.destroy();
+                    } catch (InterruptedException e) {
+                        throw new RuntimeException(e);
+                    }
+                }).start();
                 ExecuteMessage executeMessage = ProcessUtils.runProcessAndGetMessage(runProcess, "执行");
                 System.out.println(executeMessage);
                 executeMessageList.add(executeMessage);
@@ -107,8 +121,6 @@ public class JavaNativeCodeSandbox implements CodeSandbox {
             executeCodeResponse.setStatus(1);
         }
         executeCodeResponse.setOutputList(outputList);
-        // 正常运行完成
-        executeCodeResponse.setStatus(1);
         // 判断是否正确
         JudgeInfo judgeInfo = new JudgeInfo();
         // 获取执行时间
