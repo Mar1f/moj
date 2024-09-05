@@ -1,5 +1,6 @@
 package com.mar.mojcodesandbox.model;
 
+import cn.hutool.bloomfilter.bitMap.LongMap;
 import lombok.Data;
 
 /**
@@ -16,4 +17,6 @@ public class ExecuteMessage {
     private String errorMessage;
 
     private Long time;
+
+    private Long memory;
 }

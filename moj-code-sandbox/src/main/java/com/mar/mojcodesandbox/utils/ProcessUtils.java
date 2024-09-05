@@ -12,89 +12,103 @@ import java.io.*;
  * @data:2024/09/02
  **/
 public class ProcessUtils {
+
     /**
+     * 执行进程并获取信息
      *
      * @param runProcess
      * @param opName
      * @return
      */
-    public static ExecuteMessage runProcessAndGetMessage(Process runProcess, String opName){
+    public static ExecuteMessage runProcessAndGetMessage(Process runProcess, String opName) {
         ExecuteMessage executeMessage = new ExecuteMessage();
 
         try {
             StopWatch stopWatch = new StopWatch();
             stopWatch.start();
+            // 等待程序执行，获取错误码
             int exitValue = runProcess.waitFor();
             executeMessage.setExitValue(exitValue);
-            if(exitValue == 0){
-                //正常退出
+            // 正常退出
+            if (exitValue == 0) {
                 System.out.println(opName + "成功");
-                BufferedReader bufferedReader=new BufferedReader(new InputStreamReader(runProcess.getInputStream()));
-                StringBuilder compileOutputStringBuilder = new StringBuilder();
-                // 拿到控制台的输入流
-                String compileOutputLine;
-                while((compileOutputLine = bufferedReader.readLine()) != null){
-                    compileOutputStringBuilder.append(compileOutputLine).append("\n");
-                }
-                executeMessage.setMessage(compileOutputStringBuilder.toString());
-            }
-            else {
-                // 异常退出
-                System.out.println( opName + "失败，错误码:" + exitValue);
+                // 分批获取进程的正常输出
                 BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(runProcess.getInputStream()));
                 StringBuilder compileOutputStringBuilder = new StringBuilder();
-                // 拿到控制台的输入流（正常输出）
+                // 逐行读取
                 String compileOutputLine;
-                while((compileOutputLine = bufferedReader.readLine()) != null) {
+                while ((compileOutputLine = bufferedReader.readLine()) != null) {
+                    compileOutputStringBuilder.append(compileOutputLine).append("\n");
+                }
+                executeMessage.setMessage(compileOutputStringBuilder.toString());
+            } else {
+                // 异常退出
+                System.out.println(opName + "失败，错误码： " + exitValue);
+                // 分批获取进程的正常输出
+                BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(runProcess.getInputStream()));
+                StringBuilder compileOutputStringBuilder = new StringBuilder();
+                // 逐行读取
+                String compileOutputLine;
+                while ((compileOutputLine = bufferedReader.readLine()) != null) {
                     compileOutputStringBuilder.append(compileOutputLine).append("\n");
                 }
                 executeMessage.setMessage(compileOutputStringBuilder.toString());
 
-                // 分批获取进程的输出
-                BufferedReader errorBufferedReader=new BufferedReader(new InputStreamReader(runProcess.getErrorStream()));
+                // 分批获取进程的错误输出
+                BufferedReader errorBufferedReader = new BufferedReader(new InputStreamReader(runProcess.getErrorStream()));
                 StringBuilder errorCompileOutputStringBuilder = new StringBuilder();
 
-                // 拿到控制台的输入流
+                // 逐行读取
                 String errorCompileOutputLine;
-                while((errorCompileOutputLine = errorBufferedReader.readLine()) != null) {
+                while ((errorCompileOutputLine = errorBufferedReader.readLine()) != null) {
                     errorCompileOutputStringBuilder.append(errorCompileOutputLine).append("\n");
                 }
                 executeMessage.setErrorMessage(errorCompileOutputStringBuilder.toString());
             }
-
             stopWatch.stop();
             executeMessage.setTime(stopWatch.getLastTaskTimeMillis());
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return executeMessage;
     }
 
     /**
-     * 交互式进程
+     * 执行交互式进程并获取信息
+     *
      * @param runProcess
      * @param args
      * @return
      */
-    public static ExecuteMessage runInterProcessAndGetMessage(Process runProcess,String args){
+    public static ExecuteMessage runInteractProcessAndGetMessage(Process runProcess, String args) {
         ExecuteMessage executeMessage = new ExecuteMessage();
+
         try {
+            // 向控制台输入程序
             OutputStream outputStream = runProcess.getOutputStream();
             OutputStreamWriter outputStreamWriter = new OutputStreamWriter(outputStream);
             String[] s = args.split(" ");
-            String join = StrUtil.join("\n",s)+ "\n";
+            String join = StrUtil.join("\n", s) + "\n";
             outputStreamWriter.write(join);
+            // 相当于按了回车，执行输入的发送
             outputStreamWriter.flush();
+
+            // 分批获取进程的正常输出
             InputStream inputStream = runProcess.getInputStream();
-            BufferedReader bufferedReader=new BufferedReader(new InputStreamReader(inputStream));
+            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
             StringBuilder compileOutputStringBuilder = new StringBuilder();
-            // 拿到控制台的输入流
+            // 逐行读取
             String compileOutputLine;
-            while((compileOutputLine = bufferedReader.readLine()) != null){
+            while ((compileOutputLine = bufferedReader.readLine()) != null) {
                 compileOutputStringBuilder.append(compileOutputLine);
             }
             executeMessage.setMessage(compileOutputStringBuilder.toString());
-        }catch (Exception e){
+            // 记得资源的释放，否则会卡死
+            outputStreamWriter.close();
+            outputStream.close();
+            inputStream.close();
+            runProcess.destroy();
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return executeMessage;

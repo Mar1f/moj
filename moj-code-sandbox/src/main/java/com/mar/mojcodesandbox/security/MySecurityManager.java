@@ -11,7 +11,6 @@ public class MySecurityManager extends SecurityManager{
     //检查所有权限
     @Override
     public void checkPermission(Permission permission) {
-        System.out.println("默认无限制");
 //        super.checkPermission(permission);
 
     }
