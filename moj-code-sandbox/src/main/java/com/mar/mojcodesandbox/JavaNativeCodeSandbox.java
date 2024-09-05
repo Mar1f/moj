@@ -9,6 +9,7 @@ import com.mar.mojcodesandbox.model.ExecuteCodeRequest;
 import com.mar.mojcodesandbox.model.ExecuteCodeResponse;
 import com.mar.mojcodesandbox.model.ExecuteMessage;
 import com.mar.mojcodesandbox.model.JudgeInfo;
+import com.mar.mojcodesandbox.security.DefaultSecurityManager;
 import com.mar.mojcodesandbox.utils.ProcessUtils;
 
 import java.io.*;
@@ -45,6 +46,10 @@ public class JavaNativeCodeSandbox implements CodeSandbox {
         WORD_TREE = new WordTree();
         WORD_TREE.addWords(blackList);
     }
+
+    private static final String SECURITY_MANAGER_PATH = "F:\\java\\code\\moj\\moj-code-sandbox\\src\\main\\resources\\security";
+
+    private static final String SECURITY_MANAGER_CLASS_NAME = "MySecurityManager";
     public static void main(String[] args) {
         JavaNativeCodeSandbox javaNativeCodeSandbox = new JavaNativeCodeSandbox();
         ExecuteCodeRequest executeCodeRequest = new ExecuteCodeRequest();
@@ -59,6 +64,7 @@ public class JavaNativeCodeSandbox implements CodeSandbox {
 
     @Override
     public ExecuteCodeResponse executeCode(ExecuteCodeRequest executeCodeRequest) {
+        System.setSecurityManager(new DefaultSecurityManager());
         List<String> inputList = executeCodeRequest.getInputList();
         String code = executeCodeRequest.getCode();
         String language = executeCodeRequest.getLanguage();
@@ -95,7 +101,8 @@ public class JavaNativeCodeSandbox implements CodeSandbox {
         List<ExecuteMessage> executeMessageList = new ArrayList<>();
         for (String inputArgs : inputList){
 
-            String runCmd = String.format("java -Xmx256m -Dfile.encoding=UTF-8 -cp %s Main %s", userCodeParentPath, inputArgs);
+            String runCmd = String.format("java -Xmx256m -Dfile.encoding=UTF-8 -cp %s;%s -Djava.security.manager=%s Main %s"
+                    , userCodeParentPath,SECURITY_MANAGER_PATH, SECURITY_MANAGER_CLASS_NAME,inputArgs);
             try {
                 Process runProcess = Runtime.getRuntime().exec(runCmd);
                 // 超时控制创建一个新的进程，防止有程序堵塞，当时间超过5秒的时候自动杀死程序
