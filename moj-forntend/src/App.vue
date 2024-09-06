@@ -11,6 +11,7 @@
 
 <style>
 #app {
+  background: #fb9dc7;
 }
 </style>
 <script setup lang="ts">

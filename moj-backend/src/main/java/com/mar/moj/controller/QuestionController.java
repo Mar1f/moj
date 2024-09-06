@@ -1,7 +1,7 @@
 package com.mar.moj.controller;
 
-import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.google.gson.Gson;
 import com.mar.moj.annotation.AuthCheck;
 import com.mar.moj.common.BaseResponse;
 import com.mar.moj.common.DeleteRequest;
@@ -11,19 +11,23 @@ import com.mar.moj.constant.UserConstant;
 import com.mar.moj.exception.BusinessException;
 import com.mar.moj.exception.ThrowUtils;
 import com.mar.moj.model.dto.question.*;
+import com.mar.moj.model.dto.questionsubmit.QuestionSubmitAddRequest;
+import com.mar.moj.model.dto.questionsubmit.QuestionSubmitQueryRequest;
 import com.mar.moj.model.entity.Question;
+import com.mar.moj.model.entity.QuestionSubmit;
 import com.mar.moj.model.entity.User;
+import com.mar.moj.model.vo.QuestionSubmitVO;
 import com.mar.moj.model.vo.QuestionVO;
 import com.mar.moj.service.QuestionService;
+import com.mar.moj.service.QuestionSubmitService;
 import com.mar.moj.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.web.bind.annotation.*;
-import com.google.gson.Gson;
+
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
-
 /**
  * 题目接口
  *
@@ -39,6 +43,9 @@ public class QuestionController {
     @Resource
     private UserService userService;
 
+    @Resource
+    private QuestionSubmitService questionSubmitService;
+    
     private final static Gson GSON = new Gson();
 
     // region 增删改查
@@ -60,6 +67,10 @@ public class QuestionController {
         List<String> tags = questionAddRequest.getTags();
         if (tags != null) {
             question.setTags(GSON.toJson(tags));
+        }
+        String difficulty = questionAddRequest.getDifficulty();
+        if(difficulty != null) {
+            question.setDifficulty(GSON.toJson(difficulty));
         }
         List<JudgeCase> judgeCase = questionAddRequest.getJudgeCase();
         if (judgeCase != null) {
@@ -122,6 +133,10 @@ public class QuestionController {
         List<String> tags = questionUpdateRequest.getTags();
         if (tags != null) {
             question.setTags(GSON.toJson(tags));
+        }
+        String difficulty = questionUpdateRequest.getDifficulty();
+        if(difficulty != null) {
+            question.setDifficulty(GSON.toJson(difficulty));
         }
         List<JudgeCase> judgeCase = questionUpdateRequest.getJudgeCase();
         if (judgeCase != null) {
@@ -262,6 +277,10 @@ public class QuestionController {
         if (tags != null) {
             question.setTags(GSON.toJson(tags));
         }
+        String difficulty = questionEditRequest.getDifficulty();
+        if(difficulty != null) {
+            question.setDifficulty(GSON.toJson(difficulty));
+        }
         List<JudgeCase> judgeCase = questionEditRequest.getJudgeCase();
         if (judgeCase != null) {
             question.setJudgeCase(GSON.toJson(judgeCase));
@@ -284,6 +303,45 @@ public class QuestionController {
         boolean result = questionService.updateById(question);
         return ResultUtils.success(result);
     }
+    /**
+     * 提交题目
+     *
+     * @param questionSubmitAddRequest
+     * @param request
+     * @return 提交记录的 id
+     */
+    @PostMapping("/question_submit/do")
+    public BaseResponse<Long> doQuestionSubmit(@RequestBody QuestionSubmitAddRequest questionSubmitAddRequest,
+                                               HttpServletRequest request) {
+        if (questionSubmitAddRequest == null || questionSubmitAddRequest.getQuestionId() <= 0) {
+            throw new BusinessException(ErrorCode.PARAMS_ERROR);
+        }
+        // 登录才能点赞
+        final User loginUser = userService.getLoginUser(request);
+        long questionSubmitId = questionSubmitService.doQuestionSubmit(questionSubmitAddRequest, loginUser);
+        return ResultUtils.success(questionSubmitId);
+    }
+
+    /**
+     * 分页获取题目提交列表（除了管理员外，普通用户只能看到非答案、提交代码等公开信息）
+     *
+     * @param questionSubmitQueryRequest
+     * @param request
+     * @return
+     */
+    @PostMapping("/question_submit/list/page")
+    public BaseResponse<Page<QuestionSubmitVO>> listQuestionSubmitByPage(@RequestBody QuestionSubmitQueryRequest questionSubmitQueryRequest,
+                                                                         HttpServletRequest request) {
+        long current = questionSubmitQueryRequest.getCurrent();
+        long size = questionSubmitQueryRequest.getPageSize();
+        // 从数据库中查询原始的题目提交分页信息
+        Page<QuestionSubmit> questionSubmitPage = questionSubmitService.page(new Page<>(current, size),
+                questionSubmitService.getQueryWrapper(questionSubmitQueryRequest));
+        final User loginUser = userService.getLoginUser(request);
+        // 返回脱敏信息
+        return ResultUtils.success(questionSubmitService.getQuestionSubmitVOPage(questionSubmitPage, loginUser));
+    }
+
     /**
      * 点赞或点踩
      *

@@ -3,15 +3,16 @@
 /* tslint:disable */
 /* eslint-disable */
 export type QuestionQueryRequest = {
-  answer?: string;
-  content?: string;
-  current?: number;
-  difficulty?: string;
-  id?: number;
-  pageSize?: number;
-  sortField?: string;
-  sortOrder?: string;
-  tags?: Array<string>;
-  title?: string;
-  userId?: number;
+    answer?: string;
+    content?: string;
+    current?: number;
+    difficulty?: string;
+    id?: number;
+    pageSize?: number;
+    sortField?: string;
+    sortOrder?: string;
+    tags?: Array<string>;
+    title?: string;
+    userId?: number;
 };
+

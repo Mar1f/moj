@@ -54,22 +54,30 @@ export default {
 </script>
 
 <style scoped>
+/* 整体布局背景颜色 */
 #basicLayout {
+  background-color: #282828; /* 统一背景颜色为 #fb9dc7 */
+  min-height: 100vh;
 }
 
+/* 头部背景颜色 */
 #basicLayout .header {
+  background-color: #282828; /* 头部背景 */
   margin-bottom: 16px;
-  box-shadow: #eee 1px 1px 5px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15); /* 添加阴影效果 */
 }
 
+/* 内容区域背景颜色 */
 #basicLayout .content {
-  background: linear-gradient(to right, #fefefe, #fff);
+  background-color: #282828; /* 内容区域背景 */
   margin-bottom: 16px;
   padding: 20px;
+  min-height: 80vh; /* 确保内容区域的最小高度 */
 }
 
+/* 页脚背景颜色 */
 #basicLayout .footer {
-  background: #efefef;
+  background-color: #282828; /* 页脚背景 */
   padding: 16px;
   position: sticky;
   bottom: 0;
