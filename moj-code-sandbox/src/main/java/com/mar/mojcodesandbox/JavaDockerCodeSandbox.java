@@ -1,10 +1,7 @@
 package com.mar.mojcodesandbox;
 
-import cn.hutool.core.date.StopWatch;
-import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.io.resource.ResourceUtil;
 import cn.hutool.core.util.ArrayUtil;
-import cn.hutool.core.util.StrUtil;
 import com.github.dockerjava.api.DockerClient;
 import com.github.dockerjava.api.async.ResultCallback;
 import com.github.dockerjava.api.command.*;
@@ -14,9 +11,8 @@ import com.github.dockerjava.core.command.ExecStartResultCallback;
 import com.mar.mojcodesandbox.model.ExecuteCodeRequest;
 import com.mar.mojcodesandbox.model.ExecuteCodeResponse;
 import com.mar.mojcodesandbox.model.ExecuteMessage;
-import com.mar.mojcodesandbox.model.JudgeInfo;
-import com.mar.mojcodesandbox.security.DefaultSecurityManager;
-import com.mar.mojcodesandbox.utils.ProcessUtils;
+import org.springframework.stereotype.Component;
+import org.springframework.util.StopWatch;
 
 import java.io.Closeable;
 import java.io.File;
@@ -25,31 +21,14 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
-/**
- * @description；
- * @author:mar1
- * @data:2024/08/31
- **/
-public class JavaDockerCodeSandbox implements CodeSandbox {
+@Component
+public class JavaDockerCodeSandbox extends JavaCodeSandboxTemplate {
 
-    private static final String GLOBAL_CODE_DIR_NAME = "tmpCode";
-
-
-    private static final String GLOBAL_JAVA_CLASS_NAME = "Main.java";
-
-    /**
-     * 守护线程，防止时间无限
-     */
     private static final long TIME_OUT = 5000L;
 
-    private static final String SECURITY_MANAGER_PATH = "F:\\java\\code\\moj\\moj-code-sandbox\\src\\main\\resources\\security";
-
-    private static final String SECURITY_MANAGER_CLASS_NAME = "MySecurityManager";
-
-    private static final boolean FIRST_INIT = true;
+    private static final Boolean FIRST_INIT = true;
 
     public static void main(String[] args) {
         JavaDockerCodeSandbox javaNativeCodeSandbox = new JavaDockerCodeSandbox();
@@ -64,39 +43,15 @@ public class JavaDockerCodeSandbox implements CodeSandbox {
         System.out.println(executeCodeResponse);
     }
 
+    /**
+     * 3、创建容器，把文件复制到容器内
+     * @param userCodeFile
+     * @param inputList
+     * @return
+     */
     @Override
-    public ExecuteCodeResponse executeCode(ExecuteCodeRequest executeCodeRequest) {
-//        System.setSecurityManager(new DenySecurityManager());
-
-        List<String> inputList = executeCodeRequest.getInputList();
-        String code = executeCodeRequest.getCode();
-        String language = executeCodeRequest.getLanguage();
-
-//        1. 把用户的代码保存为文件
-
-        String userDir = System.getProperty("user.dir");
-        String globalCodePathName = userDir + File.separator + GLOBAL_CODE_DIR_NAME;
-        // 判断全局代码目录是否存在，没有则新建
-        if (!FileUtil.exist(globalCodePathName)) {
-            FileUtil.mkdir(globalCodePathName);
-        }
-
-        // 把用户的代码隔离存放
-        String userCodeParentPath = globalCodePathName + File.separator + UUID.randomUUID();
-        String userCodePath = userCodeParentPath + File.separator + GLOBAL_JAVA_CLASS_NAME;
-        File userCodeFile = FileUtil.writeString(code, userCodePath, StandardCharsets.UTF_8);
-
-//        2. 编译代码，得到 class 文件
-        String compileCmd = String.format("javac -encoding utf-8 %s", userCodeFile.getAbsolutePath());
-        try {
-            Process compileProcess = Runtime.getRuntime().exec(compileCmd);
-            ExecuteMessage executeMessage = ProcessUtils.runProcessAndGetMessage(compileProcess, "编译");
-            System.out.println(executeMessage);
-        } catch (Exception e) {
-            return getErrorResponse(e);
-        }
-
-        // 3. 创建容器，把文件复制到容器内
+    public List<ExecuteMessage> runFile(File userCodeFile, List<String> inputList) {
+        String userCodeParentPath = userCodeFile.getParentFile().getAbsolutePath();
         // 获取默认的 Docker Client
         DockerClient dockerClient = DockerClientBuilder.getInstance().build();
 
@@ -130,7 +85,7 @@ public class JavaDockerCodeSandbox implements CodeSandbox {
         hostConfig.withMemory(100 * 1000 * 1000L);
         hostConfig.withMemorySwap(0L);
         hostConfig.withCpuCount(1L);
-        hostConfig.withSecurityOpts(Arrays.asList("seccomp=安全管理配置字符串"));
+        hostConfig.withSecurityOpts(Arrays.asList("seccomp=default"));
         hostConfig.setBinds(new Bind(userCodeParentPath, new Volume("/app")));
         CreateContainerResponse createContainerResponse = containerCmd
                 .withHostConfig(hostConfig)
@@ -242,58 +197,9 @@ public class JavaDockerCodeSandbox implements CodeSandbox {
             executeMessage.setMemory(maxMemory[0]);
             executeMessageList.add(executeMessage);
         }
-        // 4、封装结果，跟原生实现方式完全一致
-        ExecuteCodeResponse executeCodeResponse = new ExecuteCodeResponse();
-        List<String> outputList = new ArrayList<>();
-        // 取用时最大值，便于判断是否超时
-        long maxTime = 0;
-        for (ExecuteMessage executeMessage : executeMessageList) {
-            String errorMessage = executeMessage.getErrorMessage();
-            if (StrUtil.isNotBlank(errorMessage)) {
-                executeCodeResponse.setMessage(errorMessage);
-                // 用户提交的代码执行中存在错误
-                executeCodeResponse.setStatus(3);
-                break;
-            }
-            outputList.add(executeMessage.getMessage());
-            Long time = executeMessage.getTime();
-            if (time != null) {
-                maxTime = Math.max(maxTime, time);
-            }
-        }
-        // 正常运行完成
-        if (outputList.size() == executeMessageList.size()) {
-            executeCodeResponse.setStatus(1);
-        }
-        executeCodeResponse.setOutputList(outputList);
-        JudgeInfo judgeInfo = new JudgeInfo();
-        judgeInfo.setTime(maxTime);
-        // 要借助第三方库来获取内存占用，非常麻烦，此处不做实现
-//        judgeInfo.setMemory();
-
-        executeCodeResponse.setJudgeInfo(judgeInfo);
-
-//        5. 文件清理
-        if (userCodeFile.getParentFile() != null) {
-            boolean del = FileUtil.del(userCodeParentPath);
-            System.out.println("删除" + (del ? "成功" : "失败"));
-        }
-        return executeCodeResponse;
-    }
-
-    /**
-     * 获取错误响应
-     *
-     * @param e
-     * @return
-     */
-    private ExecuteCodeResponse getErrorResponse(Throwable e) {
-        ExecuteCodeResponse executeCodeResponse = new ExecuteCodeResponse();
-        executeCodeResponse.setOutputList(new ArrayList<>());
-        executeCodeResponse.setMessage(e.getMessage());
-        // 表示代码沙箱错误
-        executeCodeResponse.setStatus(2);
-        executeCodeResponse.setJudgeInfo(new JudgeInfo());
-        return executeCodeResponse;
+        return executeMessageList;
     }
 }
+
+
+

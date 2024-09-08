@@ -2,9 +2,7 @@ package com.mar.mojcodesandbox.security;
 
 import cn.hutool.core.io.FileUtil;
 
-import java.io.File;
-import java.nio.charset.StandardCharsets;
-import java.util.List;
+import java.nio.charset.Charset;
 
 /**
  * @description；
@@ -13,9 +11,7 @@ import java.util.List;
  **/
 public class TestSecurityManager {
     public static void main(String[] args) {
-        System.setSecurityManager(new SecurityManager());
-//        List<String> strings = FileUtil.readLines("F:\\java\\code\\moj\\moj-code-sandbox\\src\\main\\resources\\application.yml", StandardCharsets.UTF_8);
-        FileUtil.writeString("aa","aaa",StandardCharsets.UTF_8);
-//        System.out.println(strings);
+        System.setSecurityManager(new MySecurityManager());
+        FileUtil.writeString("aa", "aaa", Charset.defaultCharset());
     }
 }
