@@ -7,8 +7,8 @@
 
 <script setup lang="ts">
 import { ref } from "vue";
-import MdEditor from "@/components/MdEditor.vue";
-import CodeEditor from "@/components/CodeEditor.vue"; // @ is an alias to /src
+import MdEditor from "@/components/markdown/MdEditor.vue";
+import CodeEditor from "@/components/codeEditor/CodeEditor.vue"; // @ is an alias to /src
 
 const value = ref();
 const onChange = (v: string) => {

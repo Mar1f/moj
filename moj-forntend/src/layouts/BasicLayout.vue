@@ -23,7 +23,7 @@
 </template>
 
 <script>
-import GlobalHeader from "@/components/GlobalHeader";
+import GlobalHeader from "@/components/header/GlobalHeader.vue";
 import { ref } from "vue";
 
 export default {

@@ -1,15 +1,15 @@
-// initial state
 import { StoreOptions } from "vuex";
 import ACCESS_ENUM from "@/access/accessEnum";
 import { UserControllerService } from "../../generated";
 
+// initial state
 export default {
   namespaced: true,
-  state: () => ({
+  state: {
     loginUser: {
       userName: "未登录",
     },
-  }),
+  },
   actions: {
     async getLoginUser({ commit, state }, payload) {
       // 从远程请求获取登录信息

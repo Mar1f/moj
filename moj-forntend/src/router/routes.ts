@@ -1,126 +1,114 @@
 import { RouteRecordRaw } from "vue-router";
-import HomeView from "@/views/ExampleView.vue";
-import UserLayout from "@/layouts/UserLayout.vue";
-import UserLoginView from "@/views/user/UserLoginView.vue";
-import UserRegisterView from "@/views/user/UserRegisterView.vue";
-import AdminView from "@/views/AdminView.vue";
-import NoAuthView from "@/views/NoAuthView.vue";
+import QuestionLayout from "@/layouts/QuestionLayout.vue";
+import BasicLayout from "@/layouts/BasicLayout.vue";
+import { IconList, IconBookmark, IconBook } from "@arco-design/web-vue/es/icon";
 import ACCESS_ENUM from "@/access/accessEnum";
-import AddQuestionView from "@/views/question/AddQuestionView.vue";
-import ManageQuestionView from "@/views/question/ManageQuestionView.vue";
-import QuestionsView from "@/views/question/QuestionsView.vue";
-import ViewQuestionView from "@/views/question/ViewQuestionView.vue";
-import writeView from "@/views/writeView.vue";
-import QuestionSubmitView from "@/views/question/QuestionSubmitView.vue";
 
 export const routes: Array<RouteRecordRaw> = [
   {
-    path: "/user",
-    name: "用户",
-    // component: UserLayout,
-    children: [
-      {
-        path: "/user/login",
-        name: "用户登录",
-        component: UserLoginView,
-      },
-      {
-        path: "/user/register",
-        name: "用户注册",
-        component: UserRegisterView,
-      },
-      {
-        path: "/write",
-        name: "隐藏页面",
-        component: writeView,
-        meta: {
-          hideInMenu: true,
-        },
-      },
-    ],
-    meta: {
-      hideInMenu: true,
-    },
-  },
-  {
     path: "/",
     name: "主页",
-    component: QuestionsView,
-  },
-  {
-    path: "/question_submit",
-    name: "状态",
-    component: QuestionSubmitView,
+    component: () =>
+      import(/* webpackChunkName: "home" */ "../views/home/HomeView.vue"),
+    meta: {
+      hideInMenu: true,
+      layout: BasicLayout,
+    },
   },
   {
     path: "/questions",
     name: "浏览题目",
-    component: QuestionsView,
+    component: () =>
+      import(
+        /* webpackChunkName: "questionView" */ "../views/question/QuestionsView.vue"
+      ),
+    meta: {
+      icon: IconList,
+      layout: BasicLayout,
+    },
+  },
+  {
+    path: "/question_submit",
+    name: "题目提交",
+    component: () =>
+      import(
+        /* webpackChunkName: "questionSubmitView" */ "../views/question/QuestionSubmitView.vue"
+      ),
+    meta: {
+      icon: IconBookmark,
+      layout: BasicLayout,
+    },
   },
   {
     path: "/view/question/:id",
     name: "在线做题",
-    component: ViewQuestionView,
+    component: () =>
+      import(
+        /* webpackChunkName: "viewQuestionView" */ "../views/question/ViewQuestionView.vue"
+      ),
     props: true,
     meta: {
       access: ACCESS_ENUM.USER,
       hideInMenu: true,
+      layout: QuestionLayout,
     },
   },
   {
-    path: "/add/question",
-    name: "创建题目",
-    component: AddQuestionView,
-    meta: {
-      access: ACCESS_ENUM.ADMIN,
-    },
-  },
-  {
-    path: "/update/question",
-    name: "更新题目",
-    component: AddQuestionView,
-    meta: {
-      access: ACCESS_ENUM.ADMIN,
-      hideInMenu: true,
-    },
-    // hideInMenu: true,
-  },
-  {
-    path: "/manage/question/",
+    path: "/manage/question",
     name: "管理题目",
-    component: ManageQuestionView,
+    component: () =>
+      import(
+        /* webpackChunkName: "manageQuestionView" */ "../views/question/ManageQuestionView.vue"
+      ),
     meta: {
       access: ACCESS_ENUM.ADMIN,
+      icon: IconBook,
+      layout: BasicLayout,
     },
   },
-  // {
-  //   path: "/hide",
-  //   name: "隐藏页面",
-  //   component: HomeView,
-  //   meta: {
-  //     hideInMenu: true,
-  //   },
-  // },
-  // {
-  //   path: "/noAuth",
-  //   name: "无权限",
-  //   component: NoAuthView,
-  // },
-  // {
-  //   path: "/admin",
-  //   name: "管理员可见",
-  //   component: AdminView,
-  //   meta: {
-  //     access: ACCESS_ENUM.ADMIN,
-  //   },
-  // },
-  // {
-  //   path: "/about",
-  //   name: "关于我的",
-  //   // route level code-splitting
-  //   // this generates a separate chunk (about.[hash].js) for this route
-  //   // which is lazy-loaded when the route is visited.
-  //   component: () =>
-  //     import(/* webpackChunkName: "about" */ "../views/AboutView.vue"),
-  // },
+  {
+    path: "/about",
+    name: "个人中心",
+    component: () =>
+      import(/* webpackChunkName: "aboutView" */ "../views/user/AboutView.vue"),
+    meta: {
+      access: ACCESS_ENUM.USER,
+      hideInMenu: true,
+      layout: BasicLayout,
+    },
+  },
+  {
+    path: "/profile/info",
+    name: "编辑资料",
+    component: () =>
+      import(/* webpackChunkName: "userView" */ "../views/user/UserView.vue"),
+    meta: {
+      hideInMenu: true,
+      layout: BasicLayout,
+    },
+  },
+  {
+    path: "/noAuth",
+    name: "无权限",
+    component: () =>
+      import(/* webpackChunkName: "401" */ "../views/error/NoAuthError.vue"),
+    meta: {
+      hideInMenu: true,
+      layout: BasicLayout,
+    },
+  },
+  {
+    path: "/404",
+    name: "404",
+    component: () =>
+      import(/* webpackChunkName: "404" */ "../views/error/NoFoundError.vue"),
+    meta: {
+      hideInMenu: true,
+      layout: BasicLayout,
+    },
+  },
+  {
+    path: "/:pathMatch(.*)", // 匹配所有路由
+    redirect: "/404",
+  },
 ];
