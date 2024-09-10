@@ -4,7 +4,7 @@ import { StoreOptions } from "vuex";
 export default {
   namespaced: true,
   state: {
-    theme: "light",
+    theme: "dark",
   },
   actions: {},
   mutations: {

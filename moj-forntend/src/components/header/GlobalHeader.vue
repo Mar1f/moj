@@ -18,7 +18,7 @@
         </a-menu-item>
       </a-menu>
     </a-col>
-    <a-col flex="50px"> <LightSetting /> </a-col>
+    <!--    <a-col flex="50px"> <LightSetting /> </a-col>-->
     <a-col flex="100px">
       <userAvatar />
     </a-col>

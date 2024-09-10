@@ -1,34 +1,58 @@
 <template>
   <div id="questionSubmitView">
-    <a-form :model="searchParams" layout="inline">
-      <a-form-item field="questionId" label="题号" style="min-width: 240px">
-        <a-input v-model="searchParams.questionId" placeholder="请输入" />
-      </a-form-item>
-      <a-form-item field="language" label="编程语言" style="min-width: 240px">
-        <a-select
-          v-model="searchParams.language"
-          :style="{ width: '320px' }"
-          placeholder="选择编程语言"
+    <a-card class="questionSubmitList">
+      <a-form :model="searchParams" layout="inline">
+        <a-form-item
+          field="questionId"
+          label="题号"
+          style="width: 180px"
+          class="flex-2"
         >
-          <a-option>java</a-option>
-          <a-option>cpp</a-option>
-          <a-option>go</a-option>
-          <a-option>html</a-option>
-        </a-select>
-      </a-form-item>
-      <a-form-item>
-        <a-button type="primary" @click="doSubmit">搜索</a-button>
-      </a-form-item>
-    </a-form>
-    <a-divider size="0" />
-    <div class="table-container">
+          <a-input
+            v-model="searchParams.questionId"
+            placeholder="请输入题目ID"
+          />
+        </a-form-item>
+        <a-form-item
+          field="userId"
+          label="提交者ID"
+          style="width: 180px"
+          class="flex-2"
+        >
+          <a-input v-model="searchParams.userId" placeholder="请输入提交者ID" />
+        </a-form-item>
+        <a-form-item field="language" style="width: 180px" class="flex-2">
+          <a-select
+            v-model="searchParams.language"
+            :style="{ width: '320px' }"
+            placeholder="选择编程语言"
+          >
+            <a-option v-for="language in codeLanguages" :key="language">
+              {{ language }}
+            </a-option>
+          </a-select>
+        </a-form-item>
+        <a-button
+          type="outline"
+          @click="doSubmit"
+          :style="{ color: '#065ACC', borderColor: '#065ACC' }"
+        >
+          <icon-search style="margin-right: 2px" />搜索
+        </a-button>
+        <a-form-item>
+          <a-button
+            type="outline"
+            @click="refresh"
+            :style="{ color: '#27ae60', borderColor: '#27ae60' }"
+          >
+            <icon-refresh style="margin-right: 2px" />刷新
+          </a-button>
+        </a-form-item>
+      </a-form>
+      <a-divider :size="divederSize" />
       <a-table
-        :ref="tableRef"
         :columns="columns"
         :data="dataList"
-        :bordered="true"
-        :wrapper="true"
-        :cell="true"
         :pagination="{
           showTotal: true,
           pageSize: searchParams.pageSize,
@@ -36,52 +60,86 @@
           total,
         }"
         @page-change="onPageChange"
+        :bordered="{ wrapper: true, cell: true }"
+        stripe
       >
-        <template #judgeInfo="{ record }">
-          <div v-if="record.judgeInfo">
-            <div v-if="typeof record.judgeInfo === 'string'">
-              <div>判题状态: {{ JSON.parse(record.judgeInfo).message }}</div>
-              <div>内存: {{ JSON.parse(record.judgeInfo).memory }} KB</div>
-              <div>时间: {{ JSON.parse(record.judgeInfo).time }} ms</div>
-            </div>
-            <div v-else>
-              <div>判题状态: {{ record.judgeInfo.message }}</div>
-              <div>内存: {{ record.judgeInfo.memory }} KB</div>
-              <div>时间: {{ record.judgeInfo.time }} ms</div>
-            </div>
-          </div>
+        <template #result="{ record }">
+          <a-tag
+            v-if="record.judgeInfo.result === '成功'"
+            color="green"
+            bordered
+          >
+            {{ record.judgeInfo.result }}
+          </a-tag>
+          <a-tag
+            v-else-if="record.judgeInfo.result === '等待中'"
+            color="gray"
+            bordered
+          >
+            {{ record.judgeInfo.result }}
+          </a-tag>
+          <a-tag
+            v-else-if="record.judgeInfo.result === '编译错误'"
+            color="blue"
+            bordered
+          >
+            {{ record.judgeInfo.result }}
+          </a-tag>
+          <a-tag v-else color="red" bordered>
+            {{ record.judgeInfo.result }}
+          </a-tag>
+        </template>
+        <template #time="{ record }">
+          {{ record.judgeInfo.time ? record.judgeInfo.time : 0 }} ms
+        </template>
+        <template #memory="{ record }">
+          {{ record.judgeInfo.memory ? record.judgeInfo.memory : 0 }} KB
         </template>
         <template #createTime="{ record }">
-          {{ moment(record.createTime).format("YYYY-MM-DD") }}
+          {{ dayjs(record.createTime).format("YYYY-MM-DD") }}
         </template>
       </a-table>
-    </div>
+    </a-card>
   </div>
 </template>
 
 <script setup lang="ts">
-import { onMounted, ref, watchEffect } from "vue";
+import { IconRefresh, IconSearch } from "@arco-design/web-vue/es/icon";
 import {
   Question,
-  QuestionControllerService,
   QuestionSubmitQueryRequest,
+  QuestionControllerService,
 } from "../../../generated";
-import message from "@arco-design/web-vue/es/message";
+import { ref, onMounted, computed, watch } from "vue";
+import dayjs from "dayjs";
+import { Message } from "@arco-design/web-vue";
+import "@arco-design/web-vue/es/message/style/css.js";
 import { useRouter } from "vue-router";
-import moment from "moment";
-
-const tableRef = ref();
-
+import { useStore } from "vuex";
+const store = useStore();
+const router = useRouter();
 const dataList = ref([]);
 const total = ref(0);
+const divederSize = 0;
+const codeLanguages = ref(["java", "cpp", "go", "javascript", "typescript"]);
 const searchParams = ref<QuestionSubmitQueryRequest>({
+  status: undefined,
+  userId: undefined,
   questionId: undefined,
   language: undefined,
   pageSize: 10,
   current: 1,
 });
 
+const pageSize = computed(() => searchParams.value.pageSize);
+const current = computed(() => searchParams.value.current);
+
+watch([pageSize, current], () => {
+  loadData();
+});
+
 const loadData = async () => {
+  store.commit("loading/showLoading", true);
   const res = await QuestionControllerService.listQuestionSubmitByPageUsingPost(
     {
       ...searchParams.value,
@@ -93,16 +151,10 @@ const loadData = async () => {
     dataList.value = res.data.records;
     total.value = res.data.total;
   } else {
-    message.error("加载失败，" + res.message);
+    Message.error("加载失败，" + res.message);
   }
+  store.commit("loading/showLoading", false);
 };
-
-/**
- * 监听 searchParams 变量，改变时触发页面的重新加载
- */
-watchEffect(() => {
-  loadData();
-});
 
 /**
  * 页面加载时，请求数据
@@ -110,59 +162,39 @@ watchEffect(() => {
 onMounted(() => {
   loadData();
 });
+
 const columns = [
   {
-    title: "提交号",
+    title: "Run ID",
     dataIndex: "id",
-    headerCellStyle: { backgroundColor: "#FB9DC7", color: "#333" }, // 表头样式
   },
   {
     title: "提交者 id",
     dataIndex: "userId",
-    headerCellStyle: { backgroundColor: "#FB9DC7", color: "#333" },
   },
   {
     title: "题目 id",
     dataIndex: "questionId",
-    headerCellStyle: { backgroundColor: "#FB9DC7", color: "#333" },
   },
   {
-    title: "判题信息",
-    dataIndex: "judgeInfo",
-    slots: { customRender: "judgeInfo" }, // 这个自定义渲染 slot
-    headerCellStyle: { backgroundColor: "#FB9DC7", color: "#333" },
-    children: [
-      {
-        title: "状态",
-        dataIndex: "judgeInfo.message", // 你可以从 judgeInfo 中提取数据
-        headerCellStyle: { backgroundColor: "#FB9DC7", color: "#333" },
-      },
-      {
-        title: "时间(ms)",
-        dataIndex: "judgeInfo.time",
-        headerCellStyle: { backgroundColor: "#FB9DC7", color: "#333" },
-      },
-      {
-        title: "内存(KB)",
-        dataIndex: "judgeInfo.memory",
-        headerCellStyle: { backgroundColor: "#FB9DC7", color: "#333" },
-      },
-    ],
+    title: "判题结果",
+    slotName: "result",
   },
   {
-    title: "判题状态",
-    dataIndex: "status",
-    headerCellStyle: { backgroundColor: "#FB9DC7", color: "#333" },
+    title: "运行时间",
+    slotName: "time",
+  },
+  {
+    title: "运行内存",
+    slotName: "memory",
   },
   {
     title: "编程语言",
     dataIndex: "language",
-    headerCellStyle: { backgroundColor: "#FB9DC7", color: "#333" },
   },
   {
-    title: "创建时间",
+    title: "提交时间",
     slotName: "createTime",
-    headerCellStyle: { backgroundColor: "#FB9DC7", color: "#333" },
   },
 ];
 
@@ -172,8 +204,25 @@ const onPageChange = (page: number) => {
     current: page,
   };
 };
+const doSubmit = () => {
+  searchParams.value = {
+    ...searchParams.value,
+    current: 1,
+  };
+  loadData();
+};
 
-const router = useRouter();
+const refresh = () => {
+  searchParams.value = {
+    status: undefined,
+    userId: undefined,
+    questionId: undefined,
+    language: undefined,
+    pageSize: 10,
+    current: 1,
+  };
+  loadData();
+};
 
 /**
  * 跳转到做题页面
@@ -184,33 +233,23 @@ const toQuestionPage = (question: Question) => {
     path: `/view/question/${question.id}`,
   });
 };
-
-/**
- * 确认搜索，重新加载数据
- */
-const doSubmit = () => {
-  // 这里需要重置搜索页号
-  searchParams.value = {
-    ...searchParams.value,
-    current: 1,
-  };
-};
 </script>
 
 <style scoped>
+.flex-1 {
+  flex: 1;
+}
+.flex-2 {
+  flex: 2;
+}
 #questionSubmitView {
-  max-width: 1280px;
+  max-width: 1440px;
   margin: 0 auto;
-  background-color: #fb9dc7; /* 设置页面的背景颜色 */
-  padding: 20px;
-  border-radius: 10px; /* 圆角 */
+  display: flex;
+  flex-direction: row;
 }
-.table-container {
-  border: 1px solid #fb9dc7;
-  border-radius: 10px; /* 添加圆角 */
-  overflow: hidden; /* 防止子元素溢出显示 */
-}
-body {
-  background-color: #fb9dc7; /* 页面整体背景颜色 */
+.questionSubmitList {
+  flex: 1;
+  margin-right: 8px;
 }
 </style>
