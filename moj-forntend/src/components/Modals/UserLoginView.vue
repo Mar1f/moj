@@ -41,7 +41,7 @@ import message from "@arco-design/web-vue/es/message";
 import { useRouter } from "vue-router";
 import { useStore } from "vuex";
 import { ref } from "vue";
-
+import store from "../../store";
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const contactImage = require("@/assets/mar1.jpg");
 const form = reactive({
@@ -51,7 +51,6 @@ const form = reactive({
 
 const showModal = ref(false);
 const router = useRouter();
-const store = useStore();
 
 const handleSubmit = async () => {
   const res = await UserControllerService.userLoginUsingPost(form);
