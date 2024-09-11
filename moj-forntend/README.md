@@ -12,6 +12,10 @@ npm install
 npm run serve
 ```
 
+```
+openapi --input http://localhost:8121/api/v2/api-docs --output ./generated --client axios
+```
+
 ### Compiles and minifies for production
 
 ```
