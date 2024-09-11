@@ -44,6 +44,7 @@ import { UserControllerService, UserRegisterRequest } from "../../../generated";
 import message from "@arco-design/web-vue/es/message";
 import { useRouter } from "vue-router";
 import { ref } from "vue";
+import store from "../../store";
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const contactImage = require("@/assets/mar1.jpg");
 
@@ -69,14 +70,14 @@ const handleSubmit = async () => {
   const res = await UserControllerService.userRegisterUsingPost(form);
   if (res.code === 0) {
     message.success("注册成功！");
-    await router.push({ path: "login", replace: true });
+    await handleLogin(); // 注册成功跳转登录弹窗
   } else {
     message.error(res.message);
   }
 };
 
 const handleLogin = async () => {
-  router.push({ path: "login", replace: true });
+  store.dispatch("auth/toggleLogin");
 };
 
 const handleOk = () => {
@@ -105,7 +106,7 @@ body {
   position: relative;
   display: flex;
   justify-content: space-between;
-  margin: 150px auto;
+  margin: 100px auto;
   width: 470px;
 }
 

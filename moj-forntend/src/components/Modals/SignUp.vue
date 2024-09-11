@@ -22,7 +22,7 @@
       <a-form-item
         :rules="[
           { required: true, message: '密码不能为空' },
-          { minLength: 8, message: '密码长度不能低于八位' },
+          { minLength: 6, message: '密码长度不能低于六位' },
         ]"
         field="userPassword"
         tooltip="密码不少于6位"
@@ -36,7 +36,7 @@
       <a-form-item
         :rules="[
           { required: true, message: '密码不能为空' },
-          { minLength: 8, message: '密码长度不能低于八位' },
+          { minLength: 6, message: '密码长度不能低于六位' },
         ]"
         field="checkPassword"
         tooltip="密码不少于6位"

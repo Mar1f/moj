@@ -12,8 +12,8 @@
 </template>
 
 <script setup lang="ts">
-import Login from "./UserLogin.vue";
-import SignUp from "./SignUp.vue";
+import Login from "./UserLoginView.vue";
+import SignUp from "./UserRegisterView.vue";
 import { computed } from "vue";
 import { useStore } from "vuex";
 const store = useStore();
@@ -38,6 +38,6 @@ const cancel = () => {
   display: none;
 }
 .arco-modal {
-  max-width: 24.5rem;
+  max-width: 60rem;
 }
 </style>
