@@ -19,16 +19,12 @@
           <!--            <a-option :value="2">尝试过</a-option>-->
           <!--          </a-select>-->
         </a-form-item>
-        <a-form-item
-          field="extent"
-          label="难度"
-          style="width: 130px"
-          class="flex-1"
-        >
+        <a-form-item field="difficulty" label="难度" style="min-width: 160px">
           <a-select
-            v-model="extent"
-            placeholder="全部"
-            :style="{ width: '160px' }"
+            v-model="searchParams.difficulty"
+            placeholder="请选择难度"
+            style="width: 100%"
+            @change="doSubmit"
           >
             <a-option style="color: var(--color-text-2)">全部</a-option>
             <a-option style="color: #00af9b">简单</a-option>
@@ -40,12 +36,85 @@
           <template #label>
             <div><icon-tags style="margin-right: 5px" />标签</div>
           </template>
-          <a-input
-            @keyup.enter="handleAdd"
-            @blur="handleAdd"
-            v-model.trim="inputVal"
-            placeholder="请输入标签"
-          />
+          <a-select
+            :style="{ width: '200px' }"
+            placeholder="选择标签"
+            multiple
+            :fallback-option="fallback"
+            v-model="searchParams.tags"
+            allow-search
+          >
+            <a-option>数组</a-option>
+            <a-option>字符串</a-option>
+            <a-option>排序</a-option>
+            <a-option>矩阵</a-option>
+            <a-option>模拟</a-option>
+            <a-option>枚举</a-option>
+            <a-option>字符串匹配</a-option>
+            <a-option>桶排序</a-option>
+            <a-option>计数排序</a-option>
+            <a-option>基数排序</a-option>
+            <a-option>动态规划</a-option>
+            <a-option>贪心</a-option>
+            <a-option>深度优先搜索</a-option>
+            <a-option>二分查找</a-option>
+            <a-option>广度优先搜索</a-option>
+            <a-option>回溯</a-option>
+            <a-option>递归</a-option>
+            <a-option>分治</a-option>
+            <a-option>记忆化搜索</a-option>
+            <a-option>归并排序</a-option>
+            <a-option>快速选择</a-option>
+            <a-option>哈希表</a-option>
+            <a-option>树</a-option>
+            <a-option>二叉树</a-option>
+            <a-option>堆（优先队列）</a-option>
+            <a-option>栈</a-option>
+            <a-option>图</a-option>
+            <a-option>链表</a-option>
+            <a-option>单调栈</a-option>
+            <a-option>有序集合</a-option>
+            <a-option>队列</a-option>
+            <a-option>二叉搜索树</a-option>
+            <a-option>拓扑排序</a-option>
+            <a-option>最短路</a-option>
+            <a-option>单调队列</a-option>
+            <a-option>双向链表</a-option>
+            <a-option>最小生成树</a-option>
+            <a-option>强连通分量</a-option>
+            <a-option>欧拉回路</a-option>
+            <a-option>双连通分量</a-option>
+            <a-option>并查集</a-option>
+            <a-option>字典树</a-option>
+            <a-option>树状数组</a-option>
+            <a-option>后缀数组</a-option>
+            <a-option>位运算</a-option>
+            <a-option>双指针</a-option>
+            <a-option>前缀和</a-option>
+            <a-option>计数</a-option>
+            <a-option>滑动窗口</a-option>
+            <a-option>状态压缩</a-option>
+            <a-option>哈希函数</a-option>
+            <a-option>滚动哈希</a-option>
+            <a-option>扫描线</a-option>
+            <a-option>数学</a-option>
+            <a-option>数论</a-option>
+            <a-option>几何</a-option>
+            <a-option>组合数学</a-option>
+            <a-option>博弈</a-option>
+            <a-option>随机化</a-option>
+            <a-option>概率与统计</a-option>
+            <a-option>水塘抽样</a-option>
+            <a-option>拒绝采样</a-option>
+            <a-option>数据库</a-option>
+            <a-option>设计</a-option>
+            <a-option>数据流</a-option>
+            <a-option>交互</a-option>
+            <a-option>脑筋急转弯</a-option>
+            <a-option>迭代器</a-option>
+            <a-option>多线程</a-option>
+            <a-option>shell</a-option>
+          </a-select>
         </a-form-item>
         <a-form-item field="title" class="flex-2" style="min-width: 200px">
           <a-input-search
@@ -113,25 +182,35 @@
         bordered
         stripe
       >
-        <template #extent="{ record }">
-          <a-tag v-if="record.extent === '简单'" color="#00af9b"> 简单 </a-tag>
-          <a-tag v-if="record.extent === '中等'" color="#ffb800"> 中等 </a-tag>
-          <a-tag v-if="record.extent === '困难'" color="#ff2d55"> 困难 </a-tag>
-        </template>
         <template #tags="{ record }">
-          <a-space>
+          <a-space wrap>
             <a-tag
               v-for="(tag, index) of record.tags"
               :key="index"
-              size="small"
-              bordered
+              color="pink"
+              >{{ tag }}</a-tag
             >
-              {{ tag }}
+          </a-space>
+        </template>
+        <template #difficulty="{ record }">
+          <a-space wrap>
+            <a-tag :color="getDifficultyColor(record.difficulty)">
+              {{ record.difficulty }}
             </a-tag>
           </a-space>
         </template>
         <template #acceptedRate="{ record }">
-          {{ record.passRate }}
+          <a-progress
+            :percent="
+              record.submitNum ? record.acceptedNum / record.submitNum : 0
+            "
+            :style="{ width: '50%' }"
+            :color="{
+              '0%': 'rgb(var(--danger-6))', // 红色
+              '50%': 'rgb(var(--warning-6))', // 橙色
+              '100%': 'rgb(var(--success-6))', // 绿色
+            }"
+          />
         </template>
         <template #statue="{ record }">
           <icon-minus-circle
@@ -191,6 +270,8 @@ const searchParams = ref<QuestionQueryRequest>({
   current: 1,
   // statue: 0,
   tags: [],
+  title: "",
+  difficulty: "",
 });
 const title = ref<string>();
 const extent = ref("全部");
@@ -260,10 +341,10 @@ const columns = [
   },
   {
     title: "通过率",
-    dataIndex: "passRate",
+    slotName: "acceptedRate",
     sortable: {
       sortDirections: ["ascend"],
-    } as TableSortable,
+    },
   },
   {
     title: "难度",
@@ -282,14 +363,13 @@ const onPageChange = (page: number) => {
 };
 
 const handleRandom = async () => {
-  isLoading.value = true;
-  const res = await QuestionControllerService.getRandomQuestionUsingGet();
-  if (res.message === "OK") {
-    router.push({ path: `/view/question/${res.data?.id}` });
-  } else {
-    Message.error(res.message as string);
+  try {
+    const result = await QuestionControllerService.getRandomQuestionUsingGet(); // 调用随机问题的 API
+    const questionId = result.data.id; // 获取随机问题的 ID
+    router.push(`view/question/${questionId}`); // 跳转到问题详情页
+  } catch (error) {
+    console.error("获取随机问题失败:", error);
   }
-  isLoading.value = false;
 };
 
 const handleAdd = () => {
@@ -318,6 +398,28 @@ const doSubmit = () => {
     title: title.value,
     current: 1,
   };
+};
+
+// 标签
+const fallback = (value: string) => {
+  return {
+    value,
+    label: `++${value}++`,
+  };
+};
+
+//难度颜色
+const getDifficultyColor = (difficulty: string): string => {
+  switch (difficulty) {
+    case "简单":
+      return "green";
+    case "中等":
+      return "orange";
+    case "困难":
+      return "red";
+    default:
+      return "default"; // 默认颜色
+  }
 };
 </script>
 
