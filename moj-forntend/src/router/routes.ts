@@ -9,7 +9,7 @@ export const routes: Array<RouteRecordRaw> = [
     path: "/",
     name: "主页",
     component: () =>
-      import(/* webpackChunkName: "home" */ "../views/home/HomeView.vue"),
+      import(/* webpackChunkName: "home" */ "../views/home/HomeView2.vue"),
     meta: {
       hideInMenu: true,
       layout: BasicLayout,
