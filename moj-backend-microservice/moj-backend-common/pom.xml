@@ -8,8 +8,6 @@
         <artifactId>moj-backend-microservice</artifactId>
         <version>0.0.1-SNAPSHOT</version>
     </parent>
-
-    <groupId>org.mar</groupId>
     <artifactId>moj-backend-common</artifactId>
 
     <properties>
