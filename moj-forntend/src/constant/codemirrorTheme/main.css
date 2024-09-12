@@ -16,7 +16,7 @@
 
 .CodeMirror-scrollbar-filler,
 .CodeMirror-gutter-filler {
-  background-color: #fff;
+  background-color: #000;
 }
 
 .CodeMirror-gutters {
