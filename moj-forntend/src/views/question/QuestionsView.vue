@@ -26,10 +26,14 @@
             style="width: 100%"
             @change="doSubmit"
           >
-            <a-option style="color: var(--color-text-2)">全部</a-option>
-            <a-option style="color: #00af9b">简单</a-option>
-            <a-option style="color: #ffb800">中等</a-option>
-            <a-option style="color: #ff2d55">困难</a-option>
+            <a-option value="" class="difficulty-option">全部</a-option>
+            <a-option value="简单" class="difficulty-option green"
+              >简单</a-option
+            >
+            <a-option value="中等" class="difficulty-option orange"
+              >中等</a-option
+            >
+            <a-option value="困难" class="difficulty-option red">困难</a-option>
           </a-select>
         </a-form-item>
         <a-form-item field="tags" class="flex-2" style="min-width: 200px">
@@ -167,7 +171,7 @@
           {{ tag }}
         </a-tag>
       </a-space>
-      <a-divider class="divider" :size="divederSize" />
+      <a-divider class="divider" :size="diverSize" />
       <a-table
         :ref="tableRef"
         :columns="columns"
@@ -184,18 +188,17 @@
       >
         <template #tags="{ record }">
           <a-space wrap>
-            <a-tag
-              v-for="(tag, index) of record.tags"
-              :key="index"
-              color="pink"
-              >{{ tag }}</a-tag
-            >
+            <a-tag v-for="(tag, index) of record.tags" :key="index">{{
+              tag
+            }}</a-tag>
           </a-space>
         </template>
         <template #difficulty="{ record }">
           <a-space wrap>
-            <a-tag :color="getDifficultyColor(record.difficulty)">
-              {{ record.difficulty }}
+            <a-tag
+              :color="getDifficultyColor(cleanDifficulty(record.difficulty))"
+            >
+              {{ cleanDifficulty(record.difficulty) }}
             </a-tag>
           </a-space>
         </template>
@@ -237,8 +240,23 @@
         </template>
       </a-table>
     </a-card>
-    <!-- 进度表 -->
-    <!-- <a-card class="progress">当前进度</a-card> -->
+    进度表
+    <a-card class="progress"
+      >当前进度
+      <div class="allNum">
+        <a-space size="large">
+          <a-progress
+            type="circle"
+            :percent="0.8"
+            :style="{ width: '50%' }"
+            :color="{
+              '0%': 'rgb(var(--primary-6))',
+              '100%': 'rgb(var(--success-6))',
+            }"
+          />
+        </a-space>
+      </div>
+    </a-card>
   </div>
 </template>
 
@@ -250,21 +268,20 @@ import {
   IconCloseCircle,
   IconTags,
 } from "@arco-design/web-vue/es/icon";
-import { Message, TableSortable } from "@arco-design/web-vue";
+import message from "@arco-design/web-vue/es/message";
 import "@arco-design/web-vue/es/message/style/css.js";
 import {
   Question,
   QuestionControllerService,
   QuestionQueryRequest,
 } from "../../../generated";
-import { ref, onMounted, watch, watchEffect, computed } from "vue";
+import { ref, onMounted, watch, computed } from "vue";
 import { useRouter } from "vue-router";
 import { useStore } from "vuex";
 const store = useStore();
 const tableRef = ref();
 const dataList = ref([]);
 const total = ref(0);
-const inputVal = ref("");
 const searchParams = ref<QuestionQueryRequest>({
   pageSize: 10,
   current: 1,
@@ -274,9 +291,8 @@ const searchParams = ref<QuestionQueryRequest>({
   difficulty: "",
 });
 const title = ref<string>();
-const extent = ref("全部");
 const tags = ref<string[]>([]);
-const divederSize = 0;
+const diverSize = 0;
 const isLoading = ref(false);
 
 const pageSize = computed(() => searchParams.value.pageSize);
@@ -292,16 +308,18 @@ const loadData = async () => {
     searchParams.value
   );
   if (res.code === 0) {
-    res.data.records.forEach((item: any) => {
-      item.extent = item.tags.shift();
+    // 处理 difficulty 字段，移除多余引号
+    res.data.records.forEach((record) => {
+      record.difficulty = cleanDifficulty(record.difficulty);
     });
     dataList.value = res.data.records;
     total.value = res.data.total;
   } else {
-    Message.error("加载失败" + res.message);
+    message.error("加载失败，" + res.message);
   }
   store.commit("loading/showLoading", false);
 };
+
 /**
  * 监听 searchParams 变量，改变时触发页面的重新加载
  */
@@ -312,13 +330,6 @@ watch(
   },
   { deep: true }
 );
-watchEffect(() => {
-  if (extent.value === "全部") {
-    searchParams.value.tags = tags.value;
-  } else {
-    searchParams.value.tags = [...tags.value, extent.value];
-  }
-});
 /**
  * 页面加载时，请求数据
  */
@@ -348,7 +359,7 @@ const columns = [
   },
   {
     title: "难度",
-    slotName: "extent",
+    slotName: "difficulty",
   },
   {
     slotName: "optional",
@@ -372,12 +383,6 @@ const handleRandom = async () => {
   }
 };
 
-const handleAdd = () => {
-  if (inputVal.value) {
-    tags.value.push(inputVal.value);
-    inputVal.value = "";
-  }
-};
 const handleRemove = (key: string) => {
   tags.value = tags.value.filter((tag) => tag !== key);
 };
@@ -408,6 +413,11 @@ const fallback = (value: string) => {
   };
 };
 
+// 处理难度多带""
+const cleanDifficulty = (difficulty) => {
+  return difficulty.replace(/['"]/g, ""); // 移除引号
+};
+
 //难度颜色
 const getDifficultyColor = (difficulty: string): string => {
   switch (difficulty) {
@@ -421,6 +431,8 @@ const getDifficultyColor = (difficulty: string): string => {
       return "default"; // 默认颜色
   }
 };
+// 处理进度表
+const percent = ref(0.2);
 </script>
 
 <style scoped>
@@ -476,5 +488,20 @@ const getDifficultyColor = (difficulty: string): string => {
   text-align: left;
   margin-left: 10px;
   margin-right: 25px;
+}
+.difficulty-option.green {
+  color: green;
+}
+
+.difficulty-option.orange {
+  color: orange;
+}
+
+.difficulty-option.red {
+  color: red;
+}
+.allNum {
+  margin-top: 26px;
+  margin-left: 40px;
 }
 </style>

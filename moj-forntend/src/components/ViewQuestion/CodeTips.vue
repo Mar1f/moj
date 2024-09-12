@@ -1,6 +1,6 @@
 <template>
   <div id="codeTips">
-    <a-modal v-model:visible="isShow" @cancel="colseTips" @close="colseTips">
+    <a-modal v-model:visible="isShow" @cancel="closeTips" @close="closeTips">
       <template #title>
         <div class="header-txt">
           <span>题目输入输出处理</span>
@@ -28,7 +28,7 @@ import MdViewer from "@/components/markdown/MdViewer.vue";
  */
 interface Props {
   visible: boolean;
-  colseTips: () => void;
+  closeTips: () => void;
 }
 
 /**
@@ -36,7 +36,7 @@ interface Props {
  */
 const props = withDefaults(defineProps<Props>(), {
   visible: () => false,
-  colseTips: () => {
+  closeTips: () => {
     console.log("关闭提示");
   },
 });

@@ -39,7 +39,6 @@ import { reactive } from "vue";
 import { UserControllerService, UserLoginRequest } from "../../../generated";
 import message from "@arco-design/web-vue/es/message";
 import { useRouter } from "vue-router";
-import { useStore } from "vuex";
 import { ref } from "vue";
 import store from "../../store";
 // eslint-disable-next-line @typescript-eslint/no-var-requires

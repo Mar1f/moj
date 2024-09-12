@@ -39,7 +39,14 @@
                           }}</span>
                         </a-descriptions-item>
                         <a-descriptions-item label="通过率:">
-                          <span class="recordTxt">{{ question.passRate }}</span>
+                          <span class="recordTxt"
+                            >{{
+                              question.submitNum
+                                ? (question.acceptedNum / question.submitNum) *
+                                  100
+                                : 0
+                            }}%</span
+                          >
                         </a-descriptions-item>
                       </a-descriptions>
                     </div>
@@ -230,7 +237,7 @@
         v-if="isRecordShow"
       />
     </div>
-    <CodeTips :visible="isTipsShow" :colse-tips="colseTips" />
+    <CodeTips :visible="isTipsShow" :colse-tips="closeTips" />
   </div>
 </template>
 
@@ -336,7 +343,7 @@ const onPageChange = (page: number) => {
 };
 const setCodeDefault = () => {
   if (codeMode.value === "3") {
-    codeDefault.value = question.value?.templateCode as string;
+    codeDefault.value = question.value as string;
   } else {
     codeDefault.value = "";
   }
@@ -406,7 +413,7 @@ const openTips = () => {
   isTipsShow.value = true;
 };
 
-const colseTips = () => {
+const closeTips = () => {
   isTipsShow.value = false;
 };
 
@@ -466,7 +473,7 @@ const loadData = () => {
 
 const form = ref<QuestionSubmitAddRequest>({
   language: "java",
-  code: "",
+  code: " ",
 });
 
 /**

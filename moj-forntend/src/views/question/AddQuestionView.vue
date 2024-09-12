@@ -20,8 +20,8 @@
         <a-form-item field="tags" label="标签">
           <a-input-tag v-model="tags" placeholder="请选择标签" allow-clear />
         </a-form-item>
-        <a-form-item field="extent" label="难度">
-          <a-select v-model="extent" :style="{ width: '160px' }">
+        <a-form-item field="difficulty" label="难度">
+          <a-select v-model="difficulty" :style="{ width: '160px' }">
             <a-option>简单</a-option>
             <a-option>中等</a-option>
             <a-option>困难</a-option>
@@ -163,8 +163,8 @@ watch(toRef(props, "questionId"), (newId) => {
   loadData();
 });
 const store = useStore();
-const extent = ref("简单");
 const tags = ref();
+const difficulty = ref("简单");
 const form = ref();
 
 const codeLanguage = "java";
@@ -216,8 +216,13 @@ const loadData = async () => {
       form.value.tags = [];
     } else {
       form.value.tags = JSON.parse(form.value.tags as any);
-      extent.value = form.value.tags.shift() as any;
       tags.value = form.value.tags;
+    }
+    if (!form.value.difficulty) {
+      form.value.difficulty = "简单";
+    } else {
+      form.value.difficulty = JSON.parse(form.value.difficulty as any);
+      difficulty.value = form.value.difficulty;
     }
     if (form.value.templateCode) {
       templateForm.value.code = form.value.templateCode;
@@ -234,6 +239,7 @@ const reset = () => {
   form.value = {
     title: "",
     tags: [] as string[],
+    difficulty: "",
     answer: "",
     content: "",
     judgeConfig: {
@@ -253,6 +259,7 @@ const reset = () => {
   templateForm.value.code = form.value.templateCode;
   mergeCodeForm.value.code = form.value.mergeCode;
   tags.value = [];
+  difficulty.value = "简单";
 };
 
 onMounted(() => {
@@ -274,7 +281,7 @@ const onMergeCodeFormChange = (v: string) => {
 };
 
 const handleTags = () => {
-  return [extent.value, ...tags.value].filter((v) => v);
+  return [...tags.value].filter((v) => v);
 };
 
 const CloseDrawer = () => {

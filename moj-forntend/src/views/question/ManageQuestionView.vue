@@ -32,13 +32,35 @@
             </a-tag>
           </a-space>
         </template>
+        <template #difficulty="{ record }">
+          <a-space wrap>
+            <a-tag
+              :color="getDifficultyColor(cleanDifficulty(record.difficulty))"
+            >
+              {{ cleanDifficulty(record.difficulty) }}
+            </a-tag>
+          </a-space>
+        </template>
+        <template #acceptedRate="{ record }">
+          <a-progress
+            :percent="
+              record.submitNum ? record.acceptedNum / record.submitNum : 0
+            "
+            :style="{ width: '50%' }"
+            :color="{
+              '0%': 'rgb(var(--danger-6))', // 红色
+              '50%': 'rgb(var(--warning-6))', // 橙色
+              '100%': 'rgb(var(--success-6))', // 绿色
+            }"
+          />
+        </template>
         <template #createTime="{ record }">
           {{ dayjs(record.createTime).format("YYYY-MM-DD") }}
         </template>
         <template #optional="{ record }">
           <a-space>
-            <!-- <a-button type="primary" "> 修改</a-button>
-            <a-button status="danger" >删除</a-button> -->
+            <!--            <a-button type="primary"> 修改</a-button>-->
+            <!--            <a-button status="danger">删除</a-button>-->
             <icon-edit
               :style="{ fontSize: '18px', color: '#0A65CC' }"
               @click="doUpdate(record)"
@@ -125,8 +147,15 @@ const columns = [
     slotName: "tags",
   },
   {
+    title: "难度",
+    slotName: "difficulty",
+  },
+  {
     title: "通过率",
-    dataIndex: "passRate",
+    slotName: "acceptedRate",
+    sortable: {
+      sortDirections: ["ascend"],
+    },
   },
   {
     title: "判题配置",
@@ -182,6 +211,25 @@ const doDelete = async (question: Question) => {
 const doUpdate = (question: Question) => {
   questionId.value = question.id;
   store.commit("questionDrawer/showDrawerVisible", true);
+};
+
+// 难度颜色
+const getDifficultyColor = (difficulty: string): string => {
+  switch (difficulty) {
+    case "简单":
+      return "green";
+    case "中等":
+      return "orange";
+    case "困难":
+      return "red";
+    default:
+      return "default"; // 默认颜色
+  }
+};
+
+// 处理难度多带""
+const cleanDifficulty = (difficulty) => {
+  return difficulty.replace(/['"]/g, ""); // 移除引号
 };
 </script>
 

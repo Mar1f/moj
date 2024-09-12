@@ -1,6 +1,6 @@
 export default `
 .bytemd {
-  background-color: #fff
+  background-color: #000
 }
 .bytemd-status-right span:hover {
     color: #0366d6

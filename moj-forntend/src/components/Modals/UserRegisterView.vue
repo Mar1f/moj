@@ -42,14 +42,12 @@
 import { reactive } from "vue";
 import { UserControllerService, UserRegisterRequest } from "../../../generated";
 import message from "@arco-design/web-vue/es/message";
-import { useRouter } from "vue-router";
 import { ref } from "vue";
 import store from "../../store";
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const contactImage = require("@/assets/mar1.jpg");
 
 const showModal = ref(false);
-const router = useRouter();
 
 const form = reactive<UserRegisterRequest>({
   userAccount: "",
