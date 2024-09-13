@@ -1,13 +1,8 @@
 package com.mar.mojbackendmodel.model.vo;
 
-import cn.hutool.json.JSON;
 import cn.hutool.json.JSONUtil;
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableName;
-import com.mar.moj.model.dto.question.JudgeConfig;
-import com.mar.moj.model.entity.Question;
+import com.mar.mojbackendmodel.model.dto.question.JudgeConfig;
+import com.mar.mojbackendmodel.model.entity.Question;
 import lombok.Data;
 import org.springframework.beans.BeanUtils;
 

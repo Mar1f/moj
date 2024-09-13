@@ -10,7 +10,7 @@ use moj;
 create table if not exists user
 (
     id           bigint auto_increment comment 'id' primary key,
-    userAccount  varchar(256)                           not null comment '账号',
+    userAccount  varchar(256)                     web      not null comment '账号',
     userPassword varchar(512)                           not null comment '密码',
     unionId      varchar(256)                           null comment '微信开放平台id',
     mpOpenId     varchar(256)                           null comment '公众号openId',

@@ -1,15 +1,14 @@
-package com.mar.moj.service;
+package com.mar.mojbackenduserservice.service;
+
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.mar.moj.model.dto.user.UserQueryRequest;
-import com.mar.moj.model.vo.LoginUserVO;
-import com.mar.moj.model.vo.UserVO;
-import com.mar.moj.model.entity.User;
-
-import java.util.List;
+import com.mar.mojbackendmodel.model.dto.user.UserQueryRequest;
+import com.mar.mojbackendmodel.model.entity.User;
+import com.mar.mojbackendmodel.model.vo.LoginUserVO;
+import com.mar.mojbackendmodel.model.vo.UserVO;
 import javax.servlet.http.HttpServletRequest;
-import me.chanjar.weixin.common.bean.WxOAuth2UserInfo;
+import java.util.List;
 
 /**
  * 用户服务
@@ -36,15 +35,6 @@ public interface UserService extends IService<User> {
      * @return 脱敏后的用户信息
      */
     LoginUserVO userLogin(String userAccount, String userPassword, HttpServletRequest request);
-
-    /**
-     * 用户登录（微信开放平台）
-     *
-     * @param wxOAuth2UserInfo 从微信获取的用户信息
-     * @param request
-     * @return 脱敏后的用户信息
-     */
-    LoginUserVO userLoginByMpOpen(WxOAuth2UserInfo wxOAuth2UserInfo, HttpServletRequest request);
 
     /**
      * 获取当前登录用户

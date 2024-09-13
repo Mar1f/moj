@@ -8,16 +8,16 @@
           style="width: 130px"
           class="flex-1"
         >
-          <!--          <a-select-->
-          <!--            v-model="searchParams.statue"-->
-          <!--            placeholder="全部"-->
-          <!--            :style="{ width: '160px' }"-->
-          <!--          >-->
-          <!--            <a-option :value="0">全部</a-option>-->
-          <!--            <a-option :value="1">未开始</a-option>-->
-          <!--            <a-option :value="3">已解答</a-option>-->
-          <!--            <a-option :value="2">尝试过</a-option>-->
-          <!--          </a-select>-->
+          <a-select
+            v-model="searchParams.state"
+            placeholder="全部"
+            :style="{ width: '160px' }"
+          >
+            <a-option value="">全部</a-option>
+            <a-option value="1">未开始</a-option>
+            <a-option value="3">已解答</a-option>
+            <a-option value="2">尝试过</a-option>
+          </a-select>
         </a-form-item>
         <a-form-item field="difficulty" label="难度" style="min-width: 160px">
           <a-select
