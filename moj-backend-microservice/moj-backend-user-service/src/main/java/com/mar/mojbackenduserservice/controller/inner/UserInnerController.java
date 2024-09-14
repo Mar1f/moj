@@ -4,6 +4,7 @@ import com.mar.mojbackendmodel.model.entity.User;
 import com.mar.mojbackendserviceclient.service.UserFeignClient;
 import com.mar.mojbackenduserservice.service.UserService;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -16,7 +17,8 @@ import java.util.List;
  * @author:mar1
  * @data:2024/09/14
  **/
-@RestController("/inner")
+@RestController
+@RequestMapping("/inner")
 public class UserInnerController implements UserFeignClient {
     @Resource
     private UserService userService;

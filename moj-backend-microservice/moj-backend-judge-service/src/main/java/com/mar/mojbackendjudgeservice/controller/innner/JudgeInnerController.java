@@ -13,7 +13,8 @@ import javax.annotation.Resource;
  * @author:mar1
  * @data:2024/09/14
  **/
-@RestController("/inner")
+@RestController
+@RequestMapping("/inner")
 public class JudgeInnerController implements JudgeFeignClient {
 
     @Resource
