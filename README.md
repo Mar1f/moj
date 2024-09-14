@@ -39,7 +39,7 @@ mar1<br>
 
 ### 前端
 
-- vue + 组件库:arco-design + 代码编辑器
+- vue + 组件库 : arco-design + 代码编辑器
 - 前端工程化：ESLint + Prettier + TypeScript
 
 
@@ -47,7 +47,7 @@ mar1<br>
 
 - Java Spring Boot + MySQL + MyBatis Plus
 - Java进程控制器
-- Spring Cloud 微服务 :nacos 消息队列
+- Spring Cloud 微服务:nacos 消息队列rabbitmq
 - Redis
 - 对象存储
 - ## 架构设计
