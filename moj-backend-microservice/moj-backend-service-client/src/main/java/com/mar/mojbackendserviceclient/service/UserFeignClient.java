@@ -31,6 +31,11 @@ public interface UserFeignClient{
     @GetMapping("/get/id")
     User getById(@RequestParam("userId") long userId);
 
+    /**
+     * 根据id获取用户列表
+     * @param idList
+     * @return
+     */
     @GetMapping("/get/ids")
     List<User> listByIds(@RequestParam("idList")Collection<Long> idList);
     /**
