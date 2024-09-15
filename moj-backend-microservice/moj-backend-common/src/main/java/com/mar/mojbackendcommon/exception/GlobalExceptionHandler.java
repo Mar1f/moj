@@ -1,10 +1,9 @@
 package com.mar.mojbackendcommon.exception;
 
-
-import lombok.extern.slf4j.Slf4j;
 import com.mar.mojbackendcommon.common.BaseResponse;
 import com.mar.mojbackendcommon.common.ErrorCode;
 import com.mar.mojbackendcommon.common.ResultUtils;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 

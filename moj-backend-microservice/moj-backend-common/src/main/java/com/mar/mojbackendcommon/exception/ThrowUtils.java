@@ -1,5 +1,6 @@
 package com.mar.mojbackendcommon.exception;
 
+
 import com.mar.mojbackendcommon.common.ErrorCode;
 
 /**
