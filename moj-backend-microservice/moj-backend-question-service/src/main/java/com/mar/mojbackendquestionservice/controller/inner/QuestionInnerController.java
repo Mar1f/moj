@@ -14,32 +14,36 @@ import javax.annotation.Resource;
  * @author:mar1
  * @data:2024/09/14
  **/
+/**
+ * 该服务仅内部调用，不是给前端的
+ */
 @RestController
 @RequestMapping("/inner")
 public class QuestionInnerController implements QuestionFeignClient {
+
     @Resource
     private QuestionService questionService;
 
     @Resource
     private QuestionSubmitService questionSubmitService;
 
-
-    @Override
     @GetMapping("/get/id")
+    @Override
     public Question getQuestionById(@RequestParam("questionId") long questionId) {
         return questionService.getById(questionId);
     }
 
-
-    @Override
     @GetMapping("/question_submit/get/id")
-    public QuestionSubmit getQuestionSubmitById(@RequestParam("questionId") long questionSubmitId){
-            return questionSubmitService.getById(questionSubmitId);
+    @Override
+    public QuestionSubmit getQuestionSubmitById(@RequestParam("questionId") long questionSubmitId) {
+        return questionSubmitService.getById(questionSubmitId);
     }
 
-    @Override
     @PostMapping("/question_submit/update")
-    public boolean updateQuestionSubmitById(@RequestBody QuestionSubmit questionSubmit){
-            return questionSubmitService.updateById(questionSubmit);
+    @Override
+    public boolean updateQuestionSubmitById(@RequestBody QuestionSubmit questionSubmit) {
+        return questionSubmitService.updateById(questionSubmit);
     }
+
 }
+

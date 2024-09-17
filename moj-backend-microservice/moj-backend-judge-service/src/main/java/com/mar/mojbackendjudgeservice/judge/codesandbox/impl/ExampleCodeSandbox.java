@@ -11,10 +11,8 @@ import lombok.extern.slf4j.Slf4j;
 import java.util.List;
 
 /**
- * @description；跑通流程
- * @author:mar1
- * @data:2024/08/29
- **/
+ * 示例代码沙箱（仅为了跑通业务流程）
+ */
 @Slf4j
 public class ExampleCodeSandbox implements CodeSandbox {
     @Override

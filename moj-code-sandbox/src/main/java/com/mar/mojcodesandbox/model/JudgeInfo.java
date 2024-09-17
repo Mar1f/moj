@@ -3,12 +3,11 @@ package com.mar.mojcodesandbox.model;
 import lombok.Data;
 
 /**
- * @description；题目用例
- * @author:mar1
- * @data:2024/08/06
- **/
+ * 判题信息
+ */
 @Data
 public class JudgeInfo {
+
     /**
      * 程序执行信息
      */
@@ -20,7 +19,7 @@ public class JudgeInfo {
     private Long memory;
 
     /**
-     * 执行时间
+     * 消耗时间（KB）
      */
     private Long time;
 }

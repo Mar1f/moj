@@ -10,11 +10,6 @@ import com.mar.mojbackendmodel.model.codesandbox.ExecuteCodeResponse;
 import org.apache.commons.lang3.StringUtils;
 
 /**
- * @description；远程代码沙箱
- * @author:mar1
- * @data:2024/08/29
- **/
-/**
  * 远程代码沙箱（实际调用接口的沙箱）
  */
 public class RemoteCodeSandbox implements CodeSandbox {
@@ -22,8 +17,8 @@ public class RemoteCodeSandbox implements CodeSandbox {
     // 定义鉴权请求头和密钥
     private static final String AUTH_REQUEST_HEADER = "auth";
 
-    // 加密字符串
     private static final String AUTH_REQUEST_SECRET = "secretKey";
+
 
     @Override
     public ExecuteCodeResponse executeCode(ExecuteCodeRequest executeCodeRequest) {
@@ -41,4 +36,3 @@ public class RemoteCodeSandbox implements CodeSandbox {
         return JSONUtil.toBean(responseStr, ExecuteCodeResponse.class);
     }
 }
-

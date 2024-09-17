@@ -2,6 +2,7 @@ package com.mar.mojbackendquestionservice.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.mar.mojbackendcommon.common.ErrorCode;
 import com.mar.mojbackendcommon.constant.CommonConstant;
@@ -16,6 +17,7 @@ import com.mar.mojbackendmodel.model.enums.QuestionSubmitLanguageEnum;
 import com.mar.mojbackendmodel.model.enums.QuestionSubmitStatusEnum;
 import com.mar.mojbackendmodel.model.vo.QuestionSubmitVO;
 import com.mar.mojbackendquestionservice.mapper.QuestionSubmitMapper;
+import com.mar.mojbackendquestionservice.rabbitmq.MyMessageProducer;
 import com.mar.mojbackendquestionservice.service.QuestionService;
 import com.mar.mojbackendquestionservice.service.QuestionSubmitService;
 import com.mar.mojbackendserviceclient.service.JudgeFeignClient;
@@ -27,15 +29,15 @@ import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+
 import java.util.List;
-import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
 /**
-* @author mar1
-* @description 针对表【question_submit(题目提交)】的数据库操作Service实现
-* @createDate 2024-08-06 18:41:52
-*/
+ * @author
+ * @description 针对表【question_submit(题目提交)】的数据库操作Service实现
+ * @createDate 2023-08-07 20:58:53
+ */
 @Service
 public class QuestionSubmitServiceImpl extends ServiceImpl<QuestionSubmitMapper, QuestionSubmit>
         implements QuestionSubmitService {
@@ -49,6 +51,10 @@ public class QuestionSubmitServiceImpl extends ServiceImpl<QuestionSubmitMapper,
     @Resource
     @Lazy
     private JudgeFeignClient judgeFeignClient;
+
+    @Resource
+    private MyMessageProducer myMessageProducer;
+
     /**
      * 提交题目
      *
@@ -85,11 +91,13 @@ public class QuestionSubmitServiceImpl extends ServiceImpl<QuestionSubmitMapper,
         if (!save){
             throw new BusinessException(ErrorCode.SYSTEM_ERROR, "数据插入失败");
         }
-        // 执行判题服务
         Long questionSubmitId = questionSubmit.getId();
-        CompletableFuture.runAsync(()->{
-            judgeFeignClient.doJudge(questionSubmitId);
-        });
+        // 发送消息
+        myMessageProducer.sendMessage("code_exchange", "my_routingKey", String.valueOf(questionSubmitId));
+        // 执行判题服务
+//        CompletableFuture.runAsync(() -> {
+//            judgeFeignClient.doJudge(questionSubmitId);
+//        });
         return questionSubmitId;
     }
 
@@ -152,8 +160,6 @@ public class QuestionSubmitServiceImpl extends ServiceImpl<QuestionSubmitMapper,
 
 
 }
-
-
 
 
 

@@ -6,13 +6,12 @@ import com.mar.mojbackendmodel.model.codesandbox.ExecuteCodeRequest;
 import com.mar.mojbackendmodel.model.codesandbox.ExecuteCodeResponse;
 
 /**
- * @description；第三方沙箱
- * @author:mar1
- * @data:2024/08/29
- **/
+ * 第三方代码沙箱（调用网上现成的代码沙箱）
+ */
 public class ThirdPartyCodeSandbox implements CodeSandbox {
     @Override
     public ExecuteCodeResponse executeCode(ExecuteCodeRequest executeCodeRequest) {
+        System.out.println("第三方代码沙箱");
         return null;
     }
 }

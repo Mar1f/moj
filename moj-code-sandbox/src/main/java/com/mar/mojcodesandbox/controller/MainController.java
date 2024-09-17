@@ -8,16 +8,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.annotation.Resource;
-
-/**
- * @description；
- * @author:mar1
- * @data:2024/08/31
- **/
-
 
 @RestController("/")
 public class MainController {
@@ -56,4 +49,3 @@ public class MainController {
         return javaNativeCodeSandbox.executeCode(executeCodeRequest);
     }
 }
-

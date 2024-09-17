@@ -31,8 +31,7 @@ import java.util.List;
 /**
  * 题目接口
  *
- */
-@RestController
+ */@RestController
 @RequestMapping("/")
 @Slf4j
 public class QuestionController {
@@ -45,7 +44,7 @@ public class QuestionController {
 
     @Resource
     private QuestionSubmitService questionSubmitService;
-    
+
     private final static Gson GSON = new Gson();
 
     // region 增删改查
@@ -67,10 +66,6 @@ public class QuestionController {
         List<String> tags = questionAddRequest.getTags();
         if (tags != null) {
             question.setTags(GSON.toJson(tags));
-        }
-        String difficulty = questionAddRequest.getDifficulty();
-        if(difficulty != null) {
-            question.setDifficulty(GSON.toJson(difficulty));
         }
         List<JudgeCase> judgeCase = questionAddRequest.getJudgeCase();
         if (judgeCase != null) {
@@ -134,10 +129,6 @@ public class QuestionController {
         if (tags != null) {
             question.setTags(GSON.toJson(tags));
         }
-        String difficulty = questionUpdateRequest.getDifficulty();
-        if(difficulty != null) {
-            question.setDifficulty(GSON.toJson(difficulty));
-        }
         List<JudgeCase> judgeCase = questionUpdateRequest.getJudgeCase();
         if (judgeCase != null) {
             question.setJudgeCase(GSON.toJson(judgeCase));
@@ -172,14 +163,15 @@ public class QuestionController {
             throw new BusinessException(ErrorCode.NOT_FOUND_ERROR);
         }
         User loginUser = userFeignClient.getLoginUser(request);
-        // 如果不是管理员或者本人
-        if(!question.getUserId().equals(loginUser.getId()) && !userFeignClient.isAdmin(loginUser)) {
+        // 不是本人或管理员，不能直接获取所有信息
+        if (!question.getUserId().equals(loginUser.getId()) && !userFeignClient.isAdmin(loginUser)) {
             throw new BusinessException(ErrorCode.NO_AUTH_ERROR);
         }
         return ResultUtils.success(question);
     }
+
     /**
-     * 根据 id 获取(脱敏）
+     * 根据 id 获取（脱敏）
      *
      * @param id
      * @return
@@ -277,10 +269,6 @@ public class QuestionController {
         if (tags != null) {
             question.setTags(GSON.toJson(tags));
         }
-        String difficulty = questionEditRequest.getDifficulty();
-        if(difficulty != null) {
-            question.setDifficulty(GSON.toJson(difficulty));
-        }
         List<JudgeCase> judgeCase = questionEditRequest.getJudgeCase();
         if (judgeCase != null) {
             question.setJudgeCase(GSON.toJson(judgeCase));
@@ -303,6 +291,7 @@ public class QuestionController {
         boolean result = questionService.updateById(question);
         return ResultUtils.success(result);
     }
+
     /**
      * 提交题目
      *
@@ -316,7 +305,7 @@ public class QuestionController {
         if (questionSubmitAddRequest == null || questionSubmitAddRequest.getQuestionId() <= 0) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
-        // 登录才能提交
+        // 登录才能点赞
         final User loginUser = userFeignClient.getLoginUser(request);
         long questionSubmitId = questionSubmitService.doQuestionSubmit(questionSubmitAddRequest, loginUser);
         return ResultUtils.success(questionSubmitId);
@@ -341,6 +330,7 @@ public class QuestionController {
         // 返回脱敏信息
         return ResultUtils.success(questionSubmitService.getQuestionSubmitVOPage(questionSubmitPage, loginUser));
     }
+
 
     // 随机一题
     @GetMapping("/random")

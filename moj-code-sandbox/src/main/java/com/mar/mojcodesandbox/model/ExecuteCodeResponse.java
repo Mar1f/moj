@@ -7,11 +7,6 @@ import lombok.NoArgsConstructor;
 
 import java.util.List;
 
-/**
- * @description；
- * @author:mar1
- * @data:2024/08/29
- **/
 @Data
 @Builder
 @NoArgsConstructor
@@ -21,7 +16,7 @@ public class ExecuteCodeResponse {
     private List<String> outputList;
 
     /**
-     * 执行信息
+     * 接口信息
      */
     private String message;
 
@@ -30,5 +25,8 @@ public class ExecuteCodeResponse {
      */
     private Integer status;
 
+    /**
+     * 判题信息
+     */
     private JudgeInfo judgeInfo;
 }

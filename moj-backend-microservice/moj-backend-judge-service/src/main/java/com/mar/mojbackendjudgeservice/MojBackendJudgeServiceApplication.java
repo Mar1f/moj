@@ -1,5 +1,6 @@
 package com.mar.mojbackendjudgeservice;
 
+import com.mar.mojbackendjudgeservice.rabbitmq.InitRabbitMq;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
@@ -17,6 +18,8 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 public class MojBackendJudgeServiceApplication {
 
     public static void main(String[] args) {
+        // 初始化消息队列
+        InitRabbitMq.doInit();
         SpringApplication.run(MojBackendJudgeServiceApplication.class, args);
     }
 

@@ -2,12 +2,7 @@ package com.mar.mojcodesandbox.security;
 
 import java.security.Permission;
 
-/**
- * @description；
- * @author:mar1
- * @data:2024/09/04
- **/
-public class MySecurityManager extends SecurityManager{
+public class MySecurityManager extends SecurityManager {
 
 
     // 检查所有的权限
@@ -51,4 +46,3 @@ public class MySecurityManager extends SecurityManager{
 //        throw new SecurityException("checkConnect 权限异常：" + host + ":" + port);
     }
 }
-

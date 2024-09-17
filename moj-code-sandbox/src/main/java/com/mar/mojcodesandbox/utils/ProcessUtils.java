@@ -10,10 +10,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * @description；继承获取信息
- * @author:mar1
- * @data:2024/09/02
- **/
+ * 进程工具类
+ */
 public class ProcessUtils {
 
     /**
