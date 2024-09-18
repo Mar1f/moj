@@ -6,7 +6,6 @@ import com.mar.moj.common.BaseResponse;
 import com.mar.moj.common.ErrorCode;
 import com.mar.moj.common.ResultUtils;
 import com.mar.moj.model.entity.User;
-import com.mar.moj.service.PostThumbService;
 import com.mar.moj.service.UserService;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;

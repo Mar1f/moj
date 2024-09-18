@@ -9,6 +9,7 @@ import org.springframework.context.annotation.Configuration;
 
 /**
  * MyBatis Plus 配置
+ *
  */
 @Configuration
 @MapperScan("com.mar.mojbackendquestionservice.mapper")

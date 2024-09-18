@@ -1,8 +1,5 @@
 package com.mar.mojbackendjudgeservice.judge.strategy;
 
-
-
-
 import cn.hutool.json.JSONUtil;
 import com.mar.mojbackendmodel.model.codesandbox.JudgeInfo;
 import com.mar.mojbackendmodel.model.dto.question.JudgeCase;
@@ -11,60 +8,59 @@ import com.mar.mojbackendmodel.model.entity.Question;
 import com.mar.mojbackendmodel.model.enums.JudgeInfoMessageEnum;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
- * @description；
- * @author:mar1
- * @data:2024/08/30
- **/
+ * Java 程序的判题策略
+ */
 public class JavaLanguageJudgeStrategy implements JudgeStrategy {
-    
+
+    /**
+     * 执行判题
+     * @param judgeContext
+     * @return
+     */
     @Override
     public JudgeInfo doJudge(JudgeContext judgeContext) {
-
         JudgeInfo judgeInfo = judgeContext.getJudgeInfo();
-        Long memory = judgeInfo.getMemory();
-        Long time = judgeInfo.getTime();
+        Long memory = Optional.ofNullable(judgeInfo.getMemory()).orElse(0L);
+        Long time = Optional.ofNullable(judgeInfo.getTime()).orElse(0L);
         List<String> inputList = judgeContext.getInputList();
         List<String> outputList = judgeContext.getOutputList();
         Question question = judgeContext.getQuestion();
         List<JudgeCase> judgeCaseList = judgeContext.getJudgeCaseList();
-
-        // 根据沙箱的执行结果，设置题目的判题状态和信息
         JudgeInfoMessageEnum judgeInfoMessageEnum = JudgeInfoMessageEnum.ACCEPTED;
         JudgeInfo judgeInfoResponse = new JudgeInfo();
-
         judgeInfoResponse.setMemory(memory);
         judgeInfoResponse.setTime(time);
-
-        if(outputList.size() != inputList.size()){
+        // 先判断沙箱执行的结果输出数量是否和预期输出数量相等
+        if (outputList.size() != inputList.size()) {
             judgeInfoMessageEnum = JudgeInfoMessageEnum.WRONG_ANSWER;
             judgeInfoResponse.setMessage(judgeInfoMessageEnum.getValue());
             return judgeInfoResponse;
         }
-        // 判断输出是否正确
-        for(int i = 0; i < judgeCaseList.size(); i++){
+        // 依次判断每一项输出和预期输出是否相等
+        for (int i = 0; i < judgeCaseList.size(); i++) {
             JudgeCase judgeCase = judgeCaseList.get(i);
-            if(!judgeCase.getOutput().equals(outputList.get(i))){
+            if (!judgeCase.getOutput().equals(outputList.get(i))) {
                 judgeInfoMessageEnum = JudgeInfoMessageEnum.WRONG_ANSWER;
                 judgeInfoResponse.setMessage(judgeInfoMessageEnum.getValue());
                 return judgeInfoResponse;
             }
         }
-        //判题限制
-
+        // 判断题目限制
         String judgeConfigStr = question.getJudgeConfig();
         JudgeConfig judgeConfig = JSONUtil.toBean(judgeConfigStr, JudgeConfig.class);
         Long needMemoryLimit = judgeConfig.getMemoryLimit();
         Long needTimeLimit = judgeConfig.getTimeLimit();
-        if(memory > needMemoryLimit){
+        if (memory > needMemoryLimit) {
             judgeInfoMessageEnum = JudgeInfoMessageEnum.MEMORY_LIMIT_EXCEEDED;
             judgeInfoResponse.setMessage(judgeInfoMessageEnum.getValue());
             return judgeInfoResponse;
         }
-        //Java 程序要多耗时10s
-        long JAVA_PROGRAM_TIME_LIMIT = 10000L;
-        if(time - JAVA_PROGRAM_TIME_LIMIT> needTimeLimit){
+        // Java 程序本身需要额外执行 10 秒钟
+        long JAVA_PROGRAM_TIME_COST = 10000L;
+        if ((time - JAVA_PROGRAM_TIME_COST) > needTimeLimit) {
             judgeInfoMessageEnum = JudgeInfoMessageEnum.TIME_LIMIT_EXCEEDED;
             judgeInfoResponse.setMessage(judgeInfoMessageEnum.getValue());
             return judgeInfoResponse;

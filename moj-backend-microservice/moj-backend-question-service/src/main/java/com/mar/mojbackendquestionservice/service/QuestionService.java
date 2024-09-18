@@ -10,11 +10,10 @@ import com.mar.mojbackendmodel.model.vo.QuestionVO;
 import javax.servlet.http.HttpServletRequest;
 
 /**
-* @author mar1
+* @author
 * @description 针对表【question(题目)】的数据库操作Service
-* @createDate 2024-08-06 18:40:44
+* @createDate
 */
-
 public interface QuestionService extends IService<Question> {
 
 
@@ -33,7 +32,7 @@ public interface QuestionService extends IService<Question> {
      * @return
      */
     QueryWrapper<Question> getQueryWrapper(QuestionQueryRequest questionQueryRequest);
-
+    
     /**
      * 获取题目封装
      *
@@ -51,8 +50,5 @@ public interface QuestionService extends IService<Question> {
      * @return
      */
     Page<QuestionVO> getQuestionVOPage(Page<Question> questionPage, HttpServletRequest request);
-
-
-    Question getRandomQuestion();
-
+    
 }

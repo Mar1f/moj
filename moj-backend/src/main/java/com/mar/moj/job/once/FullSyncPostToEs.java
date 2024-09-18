@@ -3,7 +3,7 @@ package com.mar.moj.job.once;
 import com.mar.moj.esdao.PostEsDao;
 import com.mar.moj.model.dto.post.PostEsDTO;
 import com.mar.moj.model.entity.Post;
-import com.mar.moj.service.PostService;
+
 import java.util.List;
 import java.util.stream.Collectors;
 import javax.annotation.Resource;

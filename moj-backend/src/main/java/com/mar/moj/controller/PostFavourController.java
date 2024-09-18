@@ -12,8 +12,6 @@ import com.mar.moj.common.ResultUtils;
 import com.mar.moj.model.dto.postfavour.PostFavourQueryRequest;
 import com.mar.moj.model.entity.Post;
 import com.mar.moj.model.entity.User;
-import com.mar.moj.service.PostFavourService;
-import com.mar.moj.service.PostService;
 import com.mar.moj.service.UserService;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;

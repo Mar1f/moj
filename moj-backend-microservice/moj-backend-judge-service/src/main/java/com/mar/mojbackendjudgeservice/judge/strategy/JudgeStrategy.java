@@ -1,12 +1,11 @@
 package com.mar.mojbackendjudgeservice.judge.strategy;
 
+
 import com.mar.mojbackendmodel.model.codesandbox.JudgeInfo;
 
 /**
- * @description；
- * @author:mar1
- * @data:2024/08/30
- **/
+ * 判题策略
+ */
 public interface JudgeStrategy {
 
     /**

@@ -10,11 +10,6 @@ import org.springframework.web.bind.annotation.*;
 import javax.annotation.Resource;
 
 /**
- * @description；内部调用服务
- * @author:mar1
- * @data:2024/09/14
- **/
-/**
  * 该服务仅内部调用，不是给前端的
  */
 @RestController
@@ -46,4 +41,3 @@ public class QuestionInnerController implements QuestionFeignClient {
     }
 
 }
-

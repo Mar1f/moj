@@ -2,6 +2,9 @@ package com.mar.moj.mapper;
 
 import com.mar.moj.model.entity.QuestionSubmit;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
 
 /**
 * @author mar1
@@ -10,7 +13,7 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 * @Entity com.mar.moj.model.entity.QuestionSubmit
 */
 public interface QuestionSubmitMapper extends BaseMapper<QuestionSubmit> {
-
+    Integer getPassCount(@Param("userId") Long userId, @Param("ids") List<Long> ids);
 }
 
 

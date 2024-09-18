@@ -4,9 +4,9 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.mar.mojbackendmodel.model.entity.Question;
 
 /**
-* @author mar1
+* @author 
 * @description 针对表【question(题目)】的数据库操作Mapper
-* @createDate 2024-08-06 18:40:44
+* @createDate 2023-08-07 20:58:00
 * @Entity com.mar.moj.model.entity.Question
 */
 public interface QuestionMapper extends BaseMapper<Question> {

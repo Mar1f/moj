@@ -29,13 +29,13 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
-* @author mar1
+* @author
 * @description 针对表【question(题目)】的数据库操作Service实现
-* @createDate 2024-08-06 18:40:44
+* @createDate
 */
 @Service
 public class QuestionServiceImpl extends ServiceImpl<QuestionMapper, Question>
-        implements QuestionService {
+    implements QuestionService {
 
 
     @Resource
@@ -54,13 +54,12 @@ public class QuestionServiceImpl extends ServiceImpl<QuestionMapper, Question>
         String title = question.getTitle();
         String content = question.getContent();
         String tags = question.getTags();
-        String difficulty = question.getDifficulty();
         String answer = question.getAnswer();
         String judgeCase = question.getJudgeCase();
         String judgeConfig = question.getJudgeConfig();
         // 创建时，参数不能为空
         if (add) {
-            ThrowUtils.throwIf(StringUtils.isAnyBlank(title, content, tags, difficulty), ErrorCode.PARAMS_ERROR);
+            ThrowUtils.throwIf(StringUtils.isAnyBlank(title, content, tags), ErrorCode.PARAMS_ERROR);
         }
         // 有参数则校验
         if (StringUtils.isNotBlank(title) && title.length() > 80) {
@@ -96,7 +95,6 @@ public class QuestionServiceImpl extends ServiceImpl<QuestionMapper, Question>
         String title = questionQueryRequest.getTitle();
         String content = questionQueryRequest.getContent();
         List<String> tags = questionQueryRequest.getTags();
-        String difficulty = questionQueryRequest.getDifficulty();
         String answer = questionQueryRequest.getAnswer();
         Long userId = questionQueryRequest.getUserId();
         String sortField = questionQueryRequest.getSortField();
@@ -106,7 +104,6 @@ public class QuestionServiceImpl extends ServiceImpl<QuestionMapper, Question>
         queryWrapper.like(StringUtils.isNotBlank(title), "title", title);
         queryWrapper.like(StringUtils.isNotBlank(content), "content", content);
         queryWrapper.like(StringUtils.isNotBlank(answer), "answer", answer);
-        queryWrapper.like(StringUtils.isNotBlank(difficulty), "difficulty", difficulty);
         if (CollectionUtils.isNotEmpty(tags)) {
             for (String tag : tags) {
                 queryWrapper.like("tags", "\"" + tag + "\"");
@@ -158,26 +155,6 @@ public class QuestionServiceImpl extends ServiceImpl<QuestionMapper, Question>
         }).collect(Collectors.toList());
         questionVOPage.setRecords(questionVOList);
         return questionVOPage;
-    }
-
-    @Override
-    public Question getRandomQuestion() {
-        // 查询题目的总数
-        long count = this.count();
-        if (count == 0) {
-            return null;  // 或者抛出异常
-        }
-        // 生成一个随机的偏移量
-        long randomOffset = (long) (Math.random() * count);
-
-        // 使用分页查询获取随机偏移量位置的一条记录
-        Page<Question> page = new Page<>(randomOffset, 1);
-        Page<Question> resultPage = this.page(page);
-
-        if (resultPage.getRecords().isEmpty()) {
-            return null;
-        }
-        return resultPage.getRecords().get(0);
     }
 
 

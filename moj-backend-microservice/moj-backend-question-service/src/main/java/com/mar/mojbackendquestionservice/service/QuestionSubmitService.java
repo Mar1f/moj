@@ -11,12 +11,12 @@ import com.mar.mojbackendmodel.model.entity.User;
 import com.mar.mojbackendmodel.model.vo.QuestionSubmitVO;
 
 /**
-* @author mar1
+* @author 
 * @description 针对表【question_submit(题目提交)】的数据库操作Service
-* @createDate 2024-08-06 18:41:52
+* @createDate 
 */
 public interface QuestionSubmitService extends IService<QuestionSubmit> {
-
+    
     /**
      * 题目提交
      *

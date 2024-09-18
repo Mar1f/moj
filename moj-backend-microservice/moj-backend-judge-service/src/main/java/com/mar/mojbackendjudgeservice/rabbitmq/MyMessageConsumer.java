@@ -1,7 +1,7 @@
 package com.mar.mojbackendjudgeservice.rabbitmq;
 
-import com.rabbitmq.client.Channel;
 import com.mar.mojbackendjudgeservice.judge.JudgeService;
+import com.rabbitmq.client.Channel;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;

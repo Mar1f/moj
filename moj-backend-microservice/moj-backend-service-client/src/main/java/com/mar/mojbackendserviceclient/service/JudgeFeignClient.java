@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestParam;
  */
 @FeignClient(name = "moj-backend-judge-service",path = "/api/judge/inner")
 public interface JudgeFeignClient {
+
     /**
      * 判题
      * @param questionSubmitId
@@ -18,5 +19,4 @@ public interface JudgeFeignClient {
      */
     @PostMapping("/do")
     QuestionSubmit doJudge(@RequestParam("questionSubmitId") long questionSubmitId);
-
 }

@@ -2,7 +2,6 @@ package com.mar.mojbackendquestionservice.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.mar.mojbackendcommon.common.ErrorCode;
 import com.mar.mojbackendcommon.constant.CommonConstant;
@@ -29,19 +28,19 @@ import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
 /**
- * @author
- * @description 针对表【question_submit(题目提交)】的数据库操作Service实现
- * @createDate 2023-08-07 20:58:53
- */
+* @author
+* @description 针对表【question_submit(题目提交)】的数据库操作Service实现
+* @createDate
+*/
 @Service
 public class QuestionSubmitServiceImpl extends ServiceImpl<QuestionSubmitMapper, QuestionSubmit>
-        implements QuestionSubmitService {
-
+    implements QuestionSubmitService {
+    
     @Resource
     private QuestionService questionService;
 
@@ -95,9 +94,9 @@ public class QuestionSubmitServiceImpl extends ServiceImpl<QuestionSubmitMapper,
         // 发送消息
         myMessageProducer.sendMessage("code_exchange", "my_routingKey", String.valueOf(questionSubmitId));
         // 执行判题服务
-//        CompletableFuture.runAsync(() -> {
-//            judgeFeignClient.doJudge(questionSubmitId);
-//        });
+        CompletableFuture.runAsync(() -> {
+            judgeFeignClient.doJudge(questionSubmitId);
+        });
         return questionSubmitId;
     }
 
