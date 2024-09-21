@@ -333,4 +333,18 @@ public class QuestionController {
         return ResultUtils.success(questionSubmitService.getQuestionSubmitVOPage(questionSubmitPage, loginUser));
     }
 
+    // 随机一题
+    @GetMapping("/random")
+    public BaseResponse<QuestionVO> getRandomQuestion(HttpServletRequest request) {
+        // 调用服务方法获取随机问题
+        Question randomQuestion = questionService.getRandomQuestion();
+
+        if (randomQuestion == null) {
+            throw new BusinessException(ErrorCode.NOT_FOUND_ERROR, "没有找到问题");
+        }
+
+        // 返回问题的 VO 对象
+        QuestionVO questionVO = questionService.getQuestionVO(randomQuestion, request);
+        return ResultUtils.success(questionVO);
+    }
 }
