@@ -131,7 +131,7 @@
         </a-form-item>
         <!-- 随机一题 -->
         <a-spin :loading="isLoading" hide-icon>
-          <div class="random" @click="handleRandom">
+          <div class="random" @click="matchQuestion">
             <svg
               width="28.000000"
               height="28.000000"
@@ -373,11 +373,13 @@ const onPageChange = (page: number) => {
   };
 };
 
-const handleRandom = async () => {
+const matchQuestion = async () => {
   try {
     const result = await QuestionControllerService.getRandomQuestionUsingGet(); // 调用随机问题的 API
     const questionId = result.data.id; // 获取随机问题的 ID
-    router.push(`view/question/${questionId}`); // 跳转到问题详情页
+    console.log(questionId);
+    console.log(router.push(`/view/question/${questionId}`));
+    // router.push(`view/question/${questionId}`); // 跳转到问题详情页
   } catch (error) {
     console.error("获取随机问题失败:", error);
   }
