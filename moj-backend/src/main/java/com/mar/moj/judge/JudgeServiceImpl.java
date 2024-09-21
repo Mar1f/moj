@@ -14,7 +14,6 @@ import com.mar.moj.judge.codesandbox.model.JudgeInfo;
 import com.mar.moj.model.entity.Question;
 import com.mar.moj.model.entity.QuestionSubmit;
 import com.mar.moj.model.enums.QuestionSubmitStatusEnum;
-import com.mar.moj.service.JudgeService;
 import com.mar.moj.service.QuestionService;
 import com.mar.moj.service.QuestionSubmitService;
 import org.springframework.beans.factory.annotation.Value;

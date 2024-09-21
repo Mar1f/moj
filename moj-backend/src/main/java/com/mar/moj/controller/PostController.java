@@ -17,6 +17,7 @@ import com.mar.moj.common.ResultUtils;
 import com.mar.moj.exception.ThrowUtils;
 import com.mar.moj.model.entity.Post;
 import com.mar.moj.model.entity.User;
+import com.mar.moj.service.PostService;
 import com.mar.moj.service.UserService;
 import java.util.List;
 import javax.annotation.Resource;

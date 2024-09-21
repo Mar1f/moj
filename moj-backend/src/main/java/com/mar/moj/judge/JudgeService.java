@@ -1,4 +1,4 @@
-package com.mar.moj.service;
+package com.mar.moj.judge;
 
 import com.mar.moj.model.entity.QuestionSubmit;
 

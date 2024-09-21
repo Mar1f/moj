@@ -2,6 +2,7 @@ package com.mar.moj.job.cycle;
 
 import com.mar.moj.esdao.PostEsDao;
 import com.mar.moj.model.dto.post.PostEsDTO;
+import com.mar.moj.mapper.PostMapper;
 import com.mar.moj.model.entity.Post;
 import java.util.Date;
 import java.util.List;

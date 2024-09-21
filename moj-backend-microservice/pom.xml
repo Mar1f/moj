@@ -16,6 +16,7 @@
         <module>moj-backend-question-service</module>
         <module>moj-backend-user-service</module>
         <module>moj-backend-judge-service</module>
+        <module>moj-code-sandbox-sdk</module>
     </modules>
     <properties>
         <java.version>1.8</java.version>

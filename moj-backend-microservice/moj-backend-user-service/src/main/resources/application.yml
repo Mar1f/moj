@@ -1,26 +1,26 @@
-
+# 公共配置文件
 spring:
   application:
     name: moj-backend-user-service
-  # ?? dev ??
+  # 默认 dev 环境
   profiles:
     active: dev
-  # ?? swagger3
+  # 支持 swagger3
   mvc:
     pathmatch:
       matching-strategy: ant_path_matcher
-  # session ??
+  # session 配置
   session:
     store-type: redis
-    # 30 ???
+    # 30 天过期
     timeout: 2592000
-  # ?????
+  # 数据库配置
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://localhost:3306/moj
     username: root
     password: 123456
-  # Redis ??
+  # Redis 配置
   redis:
     database: 1
     host: localhost
@@ -38,7 +38,7 @@ server:
   port: 8102
   servlet:
     context-path: /api/user
-    # cookie 30 ???
+    # cookie 30 天过期
     session:
       cookie:
         max-age: 2592000
