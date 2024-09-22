@@ -96,6 +96,8 @@ public class QuestionServiceImpl extends ServiceImpl<QuestionMapper, Question>
         List<String> tags = questionQueryRequest.getTags();
         String difficulty = questionQueryRequest.getDifficulty();
         String answer = questionQueryRequest.getAnswer();
+        // todo: 做题的状态
+        String status = questionQueryRequest.getStatus();
         Long userId = questionQueryRequest.getUserId();
         String sortField = questionQueryRequest.getSortField();
         String sortOrder = questionQueryRequest.getSortOrder();

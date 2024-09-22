@@ -49,7 +49,7 @@
           </a-button>
         </a-form-item>
       </a-form>
-      <a-divider :size="divederSize" />
+      <a-divider :size="diverSize" />
       <a-table
         :columns="columns"
         :data="dataList"
@@ -65,28 +65,28 @@
       >
         <template #result="{ record }">
           <a-tag
-            v-if="record.judgeInfo.result === '成功'"
+            v-if="record.judgeInfo.message === 'Accepted'"
             color="green"
             bordered
           >
-            {{ record.judgeInfo.result }}
+            {{ record.judgeInfo.message }}
           </a-tag>
           <a-tag
-            v-else-if="record.judgeInfo.result === '等待中'"
+            v-else-if="record.judgeInfo.message === 'Waiting'"
             color="gray"
             bordered
           >
-            {{ record.judgeInfo.result }}
+            {{ record.judgeInfo.message }}
           </a-tag>
           <a-tag
-            v-else-if="record.judgeInfo.result === '编译错误'"
+            v-else-if="record.judgeInfo.message === 'Compile Error'"
             color="blue"
             bordered
           >
-            {{ record.judgeInfo.result }}
+            {{ record.judgeInfo.message }}
           </a-tag>
           <a-tag v-else color="red" bordered>
-            {{ record.judgeInfo.result }}
+            {{ record.judgeInfo.message }}
           </a-tag>
         </template>
         <template #time="{ record }">
@@ -120,7 +120,7 @@ const store = useStore();
 const router = useRouter();
 const dataList = ref([]);
 const total = ref(0);
-const divederSize = 0;
+const diverSize = 0;
 const codeLanguages = ref(["java", "cpp", "go", "javascript", "typescript"]);
 const searchParams = ref<QuestionSubmitQueryRequest>({
   status: undefined,

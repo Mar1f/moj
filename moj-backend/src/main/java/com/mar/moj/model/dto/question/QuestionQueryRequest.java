@@ -34,7 +34,10 @@ public class QuestionQueryRequest extends PageRequest implements Serializable {
      * 标签列表
      */
     private List<String> tags;
-
+    /**
+     * 做题状态
+     */
+    private String status;
     /**
      * 难度
      */
@@ -43,7 +46,6 @@ public class QuestionQueryRequest extends PageRequest implements Serializable {
      * 题目答案
      */
     private String answer;
-
     /**
      * 提交用户 id
      */

@@ -39,7 +39,7 @@
         </a-button>
       </div>
 
-      <a-divider :size="divederSize" />
+      <a-divider :size="diverSize" />
       <a-card>
         <calendar-heatmap :values="timeValue" end-date="2021-07-08" />
       </a-card>
@@ -55,7 +55,7 @@ import { CalendarHeatmap } from "vue3-calendar-heatmap";
 import { useRouter } from "vue-router";
 const router = useRouter();
 const store = useStore();
-const divederSize = 0;
+const diverSize = 0;
 
 // 获取相关信息
 const loginUser = computed(() => store.state.user.loginUser);
