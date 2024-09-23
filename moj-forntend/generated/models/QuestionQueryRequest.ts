@@ -11,6 +11,7 @@ export type QuestionQueryRequest = {
     pageSize?: number;
     sortField?: string;
     sortOrder?: string;
+    status?: string;
     tags?: Array<string>;
     title?: string;
     userId?: number;

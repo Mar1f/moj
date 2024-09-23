@@ -104,6 +104,7 @@ const router = useRouter();
 const route = useRoute();
 const isLoading = ref(false);
 const questionId = ref(route.params.id);
+const prevQuestionId = Number(route.params.id);
 watch(route, () => {
   questionId.value = route.params.id as string;
 });
@@ -115,26 +116,53 @@ const doTitleClick = () => {
   });
 };
 const getPrevQuestion = async () => {
-  const res = await QuestionControllerService.listQuestionVoByPageUsingPost(
-    questionId.value as any
-  );
-  if (res.message === "OK") {
-    router.push({ path: `/view/question/${res.data?.id}` });
-  } else {
-    Message.error("已经是第一道题目啦！");
+  try {
+    // 调用获取上一题的 API
+    const result = await QuestionControllerService.getPreviousQuestionUsingGet(
+      prevQuestionId
+    );
+    console.log(result.id);
+    // console.log(prevQuestionId);
+    // 检查是否有 data 和 id 字段
+    const previousQuestionId = result?.id;
+
+    if (previousQuestionId) {
+      // 跳转到上一题的页面
+      router.push(`/view/question/${previousQuestionId}`);
+    } else {
+      console.error("未找到上一题的ID");
+      alert("已经是第一题了！");
+    }
+  } catch (error) {
+    console.error("获取上一题失败:", error);
+    alert("获取上一题失败！");
   }
 };
 
 const getNextQuestion = async () => {
-  const res = await QuestionControllerService.listQuestionVoByPageUsingPost(
-    questionId.value as any
-  );
-  if (res.message === "OK") {
-    router.push({ path: `/view/question/${res.data?.id}` });
-  } else {
-    Message.error("已经是最后的一道题目啦！");
+  try {
+    // 调用获取下一题的 API
+    const result = await QuestionControllerService.getNextQuestionUsingGet(
+      prevQuestionId
+    );
+    console.log(result.id);
+    console.log(prevQuestionId);
+    // 检查是否有 data 和 id 字段
+    const nextQuestionId = result?.id;
+
+    if (nextQuestionId) {
+      // 跳转到下一题的页面
+      router.push(`/view/question/${nextQuestionId}`);
+    } else {
+      console.error("未找到下一题的ID");
+      alert("已经是最后一题了！");
+    }
+  } catch (error) {
+    console.error("获取下一题失败:", error);
+    alert("获取下一题失败！");
   }
 };
+
 const matchQuestion = async () => {
   try {
     const result = await QuestionControllerService.getRandomQuestionUsingGet(); // 调用随机问题的 API

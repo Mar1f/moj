@@ -17,6 +17,7 @@ import type { QuestionQueryRequest } from '../models/QuestionQueryRequest';
 import type { QuestionSubmitAddRequest } from '../models/QuestionSubmitAddRequest';
 import type { QuestionSubmitQueryRequest } from '../models/QuestionSubmitQueryRequest';
 import type { QuestionUpdateRequest } from '../models/QuestionUpdateRequest';
+import type { QuestionVO } from '../models/QuestionVO';
 import type { CancelablePromise } from '../core/CancelablePromise';
 import { OpenAPI } from '../core/OpenAPI';
 import { request as __request } from '../core/request';
@@ -184,6 +185,50 @@ export class QuestionControllerService {
             method: 'POST',
             url: '/api/question/my/list/page/vo',
             body: questionQueryRequest,
+            errors: {
+                401: `Unauthorized`,
+                403: `Forbidden`,
+                404: `Not Found`,
+            },
+        });
+    }
+    /**
+     * getNextQuestion
+     * @param currentQuestionId currentQuestionId
+     * @returns QuestionVO OK
+     * @throws ApiError
+     */
+    public static getNextQuestionUsingGet(
+        currentQuestionId: number,
+    ): CancelablePromise<QuestionVO> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/api/question/next/{currentQuestionId}',
+            path: {
+                'currentQuestionId': currentQuestionId,
+            },
+            errors: {
+                401: `Unauthorized`,
+                403: `Forbidden`,
+                404: `Not Found`,
+            },
+        });
+    }
+    /**
+     * getPreviousQuestion
+     * @param currentQuestionId currentQuestionId
+     * @returns QuestionVO OK
+     * @throws ApiError
+     */
+    public static getPreviousQuestionUsingGet(
+        currentQuestionId: number,
+    ): CancelablePromise<QuestionVO> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/api/question/previous/{currentQuestionId}',
+            path: {
+                'currentQuestionId': currentQuestionId,
+            },
             errors: {
                 401: `Unauthorized`,
                 403: `Forbidden`,

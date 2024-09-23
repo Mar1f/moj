@@ -56,4 +56,8 @@ public interface QuestionService extends IService<Question> {
 
     Question getRandomQuestion();
 
+    QuestionVO getPreviousQuestion(Long currentQuestionId);
+
+    QuestionVO getNextQuestion(Long currentQuestionId);
+
 }

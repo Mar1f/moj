@@ -23,6 +23,8 @@ import com.mar.moj.service.QuestionSubmitService;
 import com.mar.moj.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -389,5 +391,28 @@ public class QuestionController {
         // 返回问题的 VO 对象
         QuestionVO questionVO = questionService.getQuestionVO(randomQuestion, request);
         return ResultUtils.success(questionVO);
+    }
+
+
+    // 获取上一题的接口
+    @GetMapping("/previous/{currentQuestionId}")
+    public ResponseEntity<QuestionVO> getPreviousQuestion(@PathVariable Long currentQuestionId) {
+        QuestionVO previousQuestion = questionService.getPreviousQuestion(currentQuestionId);
+        if (previousQuestion != null) {
+            return ResponseEntity.ok(previousQuestion);
+        } else {
+            return ResponseEntity.noContent().build(); // 如果没有上一题，返回 204 No Content
+        }
+    }
+
+    // 获取下一题的接口
+    @GetMapping("/next/{currentQuestionId}")
+    public ResponseEntity<QuestionVO> getNextQuestion(@PathVariable Long currentQuestionId) {
+        QuestionVO nextQuestion = questionService.getNextQuestion(currentQuestionId);
+        if (nextQuestion != null) {
+            return ResponseEntity.ok(nextQuestion);
+        } else {
+            return ResponseEntity.noContent().build(); // 如果没有下一题，返回 204 No Content
+        }
     }
 }

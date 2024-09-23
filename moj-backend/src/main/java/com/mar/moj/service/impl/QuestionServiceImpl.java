@@ -1,6 +1,5 @@
 package com.mar.moj.service.impl;
 
-import cn.hutool.core.collection.CollUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -8,22 +7,26 @@ import com.mar.moj.common.ErrorCode;
 import com.mar.moj.constant.CommonConstant;
 import com.mar.moj.exception.BusinessException;
 import com.mar.moj.exception.ThrowUtils;
+import com.mar.moj.mapper.QuestionMapper;
 import com.mar.moj.model.dto.question.QuestionQueryRequest;
-import com.mar.moj.model.entity.*;
+import com.mar.moj.model.entity.Question;
+import com.mar.moj.model.entity.User;
 import com.mar.moj.model.vo.QuestionVO;
 import com.mar.moj.model.vo.UserVO;
 import com.mar.moj.service.QuestionService;
-import com.mar.moj.mapper.QuestionMapper;
 import com.mar.moj.service.UserService;
 import com.mar.moj.utils.SqlUtils;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
-import java.util.*;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -180,7 +183,42 @@ public class QuestionServiceImpl extends ServiceImpl<QuestionMapper, Question>
         return resultPage.getRecords().get(0);
     }
 
+    @Autowired
+    private QuestionMapper questionMapper;
 
+    // 获取上一题
+    @Override
+    public QuestionVO getPreviousQuestion(Long currentQuestionId) {
+        QueryWrapper<Question> queryWrapper = new QueryWrapper<>();
+        queryWrapper.lt("id", currentQuestionId).eq("isDelete", false).orderByDesc("id").last("limit 1");
+        Question previousQuestion = questionMapper.selectOne(queryWrapper);
+
+        if (previousQuestion != null) {
+            return convertToQuestionVO(previousQuestion);
+        }
+        return null;
+    }
+
+    // 获取下一题
+    @Override
+    public QuestionVO getNextQuestion(Long currentQuestionId) {
+        QueryWrapper<Question> queryWrapper = new QueryWrapper<>();
+        queryWrapper.gt("id", currentQuestionId).eq("isDelete", false).orderByAsc("id").last("limit 1");
+        Question nextQuestion = questionMapper.selectOne(queryWrapper);
+
+        if (nextQuestion != null) {
+            return convertToQuestionVO(nextQuestion);
+        }
+        return null;
+    }
+
+    // 转换为 VO 对象的辅助方法
+    private QuestionVO convertToQuestionVO(Question question) {
+        // 转换逻辑，比如映射字段
+        QuestionVO questionVO = new QuestionVO();
+        questionVO.setId(question.getId());
+        return questionVO;
+    }
 }
 
 
