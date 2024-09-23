@@ -52,4 +52,8 @@ public interface QuestionService extends IService<Question> {
     Page<QuestionVO> getQuestionVOPage(Page<Question> questionPage, HttpServletRequest request);
 
     Question getRandomQuestion();
+
+    QuestionVO getPreviousQuestion(Long currentQuestionId);
+
+    QuestionVO getNextQuestion(Long currentQuestionId);
 }

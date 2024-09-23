@@ -19,6 +19,7 @@ import com.mar.mojbackendserviceclient.service.UserFeignClient;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -175,7 +176,42 @@ public class QuestionServiceImpl extends ServiceImpl<QuestionMapper, Question>
         }
         return resultPage.getRecords().get(0);
     }
+    @Autowired
+    private QuestionMapper questionMapper;
 
+    // 获取上一题
+    @Override
+    public QuestionVO getPreviousQuestion(Long currentQuestionId) {
+        QueryWrapper<Question> queryWrapper = new QueryWrapper<>();
+        queryWrapper.lt("id", currentQuestionId).eq("isDelete", false).orderByDesc("id").last("limit 1");
+        Question previousQuestion = questionMapper.selectOne(queryWrapper);
+
+        if (previousQuestion != null) {
+            return convertToQuestionVO(previousQuestion);
+        }
+        return null;
+    }
+
+    // 获取下一题
+    @Override
+    public QuestionVO getNextQuestion(Long currentQuestionId) {
+        QueryWrapper<Question> queryWrapper = new QueryWrapper<>();
+        queryWrapper.gt("id", currentQuestionId).eq("isDelete", false).orderByAsc("id").last("limit 1");
+        Question nextQuestion = questionMapper.selectOne(queryWrapper);
+
+        if (nextQuestion != null) {
+            return convertToQuestionVO(nextQuestion);
+        }
+        return null;
+    }
+
+    // 转换为 VO 对象的辅助方法
+    private QuestionVO convertToQuestionVO(Question question) {
+        // 转换逻辑，比如映射字段
+        QuestionVO questionVO = new QuestionVO();
+        questionVO.setId(question.getId());
+        return questionVO;
+    }
 
 }
 
