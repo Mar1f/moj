@@ -1,5 +1,8 @@
 package com.mar.moj.service.impl;
 
+import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.util.StrUtil;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -8,9 +11,12 @@ import com.mar.moj.constant.CommonConstant;
 import com.mar.moj.exception.BusinessException;
 import com.mar.moj.exception.ThrowUtils;
 import com.mar.moj.mapper.QuestionMapper;
+import com.mar.moj.mapper.QuestionSubmitMapper;
 import com.mar.moj.model.dto.question.QuestionQueryRequest;
 import com.mar.moj.model.entity.Question;
+import com.mar.moj.model.entity.QuestionSubmit;
 import com.mar.moj.model.entity.User;
+import com.mar.moj.model.enums.QuestionSubmitStatusEnum;
 import com.mar.moj.model.vo.QuestionVO;
 import com.mar.moj.model.vo.UserVO;
 import com.mar.moj.service.QuestionService;
@@ -38,7 +44,8 @@ import java.util.stream.Collectors;
 public class QuestionServiceImpl extends ServiceImpl<QuestionMapper, Question>
         implements QuestionService{
 
-
+    @Resource
+    private QuestionSubmitMapper questionSubmitMapper;
     @Resource
     private UserService userService;
 
